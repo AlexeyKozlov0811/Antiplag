@@ -36,6 +36,10 @@
     <Compile Include="app\views.py" />
     <Compile Include="app\__init__.py" />
     <Compile Include="app\migrations\__init__.py" />
+    <Compile Include="DataParser\Parser.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataParser\settings.py" />
     <Compile Include="manage.py" />
     <Compile Include="Antiplag\__init__.py" />
     <Compile Include="Antiplag\settings.py" />
@@ -53,6 +57,7 @@
     <Folder Include="app\templates\" />
     <Folder Include="app\templates\app\" />
     <Folder Include="Antiplag\" />
+    <Folder Include="DataParser\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="requirements.txt" />
