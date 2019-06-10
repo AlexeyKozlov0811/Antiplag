@@ -1,8 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
 import settings
+from bs4.element import Comment
 
-
+#function open webpage and checking exceptions and return its html code or 0 in case of failure 
 def GetHTML(url):
     try:
         Search_request = requests.get(url)
@@ -28,7 +29,7 @@ def GetHTML(url):
     else:
         return Search_request
 
-
+#function parsing search result
 def Search_parsing(query):
     result=[]
     url ='http://www.google.com/search?q='
@@ -43,8 +44,31 @@ def Search_parsing(query):
                     result.append(link.string.replace(" › ","/"))
     return result
 
+#function parsing web page and extracts its textual content
+def Get_content(url):
+    Clear_text=[]
+    Web_resource=GetHTML(url)
+    if (Web_resource!=0):
+        soup = BeautifulSoup(Web_resource.text,"html.parser")   
+        for script in soup(["script", "style"]): #ignore javascript code
+            script.extract()
+        text = soup.get_text().split("\n")
+        for phrase in text:
+            if((phrase!='') and ((phrase[-1]=='.') or (phrase[-1]=='?') or (phrase[-1]=='!') or (phrase[-1]==':') or (phrase[-1]==';'))):
+                Clear_text.append(phrase)
+        del text
+        return Clear_text
+    else:
+        return 0
 
 
 
 if (__name__=="__main__"):
-   print(Search_parsing("Python"))
+    print(Search_parsing("Python"))
+    print("\n\n")
+    
+    text=Get_content(Search_parsing("Python")[2])
+    for a in text:
+        print(a)
+
+   
