@@ -1,7 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
 import settings
-from bs4.element import Comment
 
 #function open webpage and checking exceptions and return its html code or 0 in case of failure 
 def GetHTML(url):
