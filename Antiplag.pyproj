@@ -37,11 +37,11 @@
     <Compile Include="app\migrations\__init__.py" />
     <Compile Include="app\admin.py" />
     <Compile Include="app\models.py" />
-    <Compile Include="DataParser\DES_crypting.py" />
-    <Compile Include="DataParser\Parser.py">
+    <Compile Include="app\DataProcessing\DES_crypting.py" />
+    <Compile Include="app\DataProcessing\Parser.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DataParser\settings.py" />
+    <Compile Include="app\DataProcessing\settings.py" />
     <Compile Include="manage.py" />
     <Compile Include="Antiplag\__init__.py" />
     <Compile Include="Antiplag\settings.py" />
@@ -59,11 +59,10 @@
     <Folder Include="app\templates\" />
     <Folder Include="app\templates\app\" />
     <Folder Include="Antiplag\" />
-    <Folder Include="DataParser\" />
+    <Folder Include="app\DataProcessing\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\templates\app\text_list.html" />
-    <Content Include="DataParser\some_text.txt" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />

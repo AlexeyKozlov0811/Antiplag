@@ -1,7 +1,7 @@
 """
 Definition of views.
 """
-from .models import Text
+from models import Text
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
@@ -67,13 +67,5 @@ def create(request):
         text.save()
     return HttpResponseRedirect("/")
 
-#class list(TemplateView):
-#    template_name = 'text_list.html'
-#    def get(self, request):
-#        all_text = text.objects.all()
-        
-#        ctx = {
-            
-#        }
 
-#        return render(request, self.template_name, ctx)
+
