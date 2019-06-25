@@ -2,14 +2,26 @@
 
 {% block content %}
 
-    <h3>Тексти</h3>
-    {% for i in all_sources %}
+     <form method="POST" action="create/">
+        {% csrf_token %}
+        <p>
+            <label >Введіть джерело</label><br>
+            <input type="text" name="Source" required/>
+        </p>
+        <p>
+            <label>Введіть текст</label><br>
+            <textarea type="text" name="Content" required></textarea>
+        </p>
+        <input type="submit" value="Сохранить" >
+     </form>
+     <h3>Тексти</h3>
+     {% for i in all_sources %}
 
         <a href="{{ i.source }}">{{ i.source }}</a>
         <p>{{ i.content }}</p>
         <br />
-        
-    {% endfor %}    
+       
+     {% endfor %}    
 
 <p>Use this area to provide additional information.</p>
 

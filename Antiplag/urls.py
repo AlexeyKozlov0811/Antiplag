@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^contact$', app.views.contact, name='contact'),
     url(r'^about$', app.views.about, name='about'),
     url(r'^text$', app.views.get, name='text'),
+    url(r'^create/', app.views.create, name='create'),
 
 
 

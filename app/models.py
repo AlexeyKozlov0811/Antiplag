@@ -8,3 +8,11 @@ class Text(models.Model):
 
     def __str__(self):
         return 'Джерело - {0}'.format(self.source)
+
+    def create(self, source, content):
+        text = Text()
+        text.source = source
+        text.content = content
+        text.save()
+        return text
+

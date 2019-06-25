@@ -7,6 +7,7 @@ from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
 from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
 
 def home(request):
     """Renders the home page."""
@@ -57,6 +58,14 @@ def get(request):
             'all_sources':all_text,
         }
     )
+
+def create(request):
+    if request.method == "POST":
+        text = Text()
+        text.source = request.POST.get("Source")
+        text.content = request.POST.get("Content")
+        text.save()
+    return HttpResponseRedirect("/")
 
 #class list(TemplateView):
 #    template_name = 'text_list.html'
