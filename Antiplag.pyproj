@@ -37,6 +37,7 @@
     <Compile Include="app\migrations\__init__.py" />
     <Compile Include="app\admin.py" />
     <Compile Include="app\models.py" />
+    <Compile Include="DataParser\DES_crypting.py" />
     <Compile Include="DataParser\Parser.py">
       <SubType>Code</SubType>
     </Compile>
@@ -62,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\templates\app\text_list.html" />
+    <Content Include="DataParser\some_text.txt" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />
