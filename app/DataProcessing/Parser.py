@@ -1,7 +1,9 @@
 from bs4 import BeautifulSoup
 import requests
-import settings
+#import settings
 from math import ceil
+
+pages=1
 
 #function open webpage and checking exceptions and return its html code or 0 in case of failure
 def get_HTML(url):

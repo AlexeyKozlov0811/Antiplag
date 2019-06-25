@@ -1,13 +1,16 @@
 """
 Definition of views.
 """
-from models import Text
+from .models import Text
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
 from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
+from .DataProcessing import Parser
+#from .DataProcessing import DES_crypting
+
 
 def home(request):
     """Renders the home page."""
