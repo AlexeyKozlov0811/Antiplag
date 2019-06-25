@@ -19,6 +19,10 @@ urlpatterns = [
     url(r'^$', app.views.home, name='home'),
     url(r'^contact$', app.views.contact, name='contact'),
     url(r'^about$', app.views.about, name='about'),
+    url(r'^text$', app.views.get, name='text'),
+
+
+
     url(r'^login/$',
         django.contrib.auth.views.login,
         {
@@ -43,4 +47,5 @@ urlpatterns = [
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
 ]

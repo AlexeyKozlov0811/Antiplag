@@ -1,0 +1,16 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+
+    <h3>Тексти</h3>
+    {% for i in all_sources %}
+
+        <a href="{{ i.source }}">{{ i.source }}</a>
+        <p>{{ i.content }}</p>
+        <br />
+        
+    {% endfor %}    
+
+<p>Use this area to provide additional information.</p>
+
+{% endblock %}

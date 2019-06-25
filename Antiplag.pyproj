@@ -31,11 +31,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app\forms.py" />
-    <Compile Include="app\models.py" />
     <Compile Include="app\tests.py" />
     <Compile Include="app\views.py" />
     <Compile Include="app\__init__.py" />
     <Compile Include="app\migrations\__init__.py" />
+    <Compile Include="app\admin.py" />
+    <Compile Include="app\models.py" />
     <Compile Include="DataParser\Parser.py">
       <SubType>Code</SubType>
     </Compile>
@@ -60,6 +61,7 @@
     <Folder Include="DataParser\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\app\text_list.html" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />

@@ -1,11 +1,12 @@
 """
 Definition of views.
 """
-
+from .models import Text
 from django.shortcuts import render
 from django.http import HttpRequest
 from django.template import RequestContext
 from datetime import datetime
+from django.views.generic import TemplateView
 
 def home(request):
     """Renders the home page."""
@@ -44,3 +45,26 @@ def about(request):
             'year':datetime.now().year,
         }
     )
+
+def get(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    all_text = Text.objects.all()
+    return render(
+        request, 
+        'app/text_list.html',
+        {
+            'all_sources':all_text,
+        }
+    )
+
+#class list(TemplateView):
+#    template_name = 'text_list.html'
+#    def get(self, request):
+#        all_text = text.objects.all()
+        
+#        ctx = {
+            
+#        }
+
+#        return render(request, self.template_name, ctx)
