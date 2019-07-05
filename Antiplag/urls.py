@@ -22,6 +22,7 @@ urlpatterns = [
     url(r'^about$', app.views.about, name='about'),
     url(r'^text$', app.views.get, name='text'),
     url(r'^create/$', app.views.create, name='create'),
+    url(r'^check_uniq/$', app.views.check_uniq, name='check_uniq'),
 
 
 

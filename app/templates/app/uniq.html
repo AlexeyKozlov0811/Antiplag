@@ -1,0 +1,10 @@
+﻿{% extends "app/layout.html" %}
+
+{% block content %}
+    {% for val in uniq%}
+        <p>{{val}}</p>
+    {% endfor %}
+    {% for val in percentage%}
+        <p>{{val}}</p>
+    {% endfor %}
+{% endblock %}

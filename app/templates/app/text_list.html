@@ -1,6 +1,20 @@
 ﻿{% extends "app/layout.html" %}
 
 {% block content %}
+     <form method="POST" action="check_uniq/">
+        {% csrf_token %}
+        <p>
+            <label >Введіть джерело</label><br>
+            <input type="text" name="Source" required/>
+        </p>
+        <p>
+            <label>Введіть текст</label><br>
+            <textarea type="text" name="Content" required></textarea>
+        </p>
+        <input type="submit" value="Сохранить" >
+     </form>
+     <p>Унікальність тексту = </p>
+
 
      <form method="POST" action="create/">
         {% csrf_token %}

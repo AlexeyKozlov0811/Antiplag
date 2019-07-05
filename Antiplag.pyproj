@@ -30,6 +30,8 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="app\DataProcessing\hash_encryption.py" />
+    <Compile Include="app\DataProcessing\shingling.py" />
     <Compile Include="app\forms.py" />
     <Compile Include="app\tests.py" />
     <Compile Include="app\views.py" />
@@ -37,7 +39,6 @@
     <Compile Include="app\migrations\__init__.py" />
     <Compile Include="app\admin.py" />
     <Compile Include="app\models.py" />
-    <Compile Include="app\DataProcessing\DES_crypting.py" />
     <Compile Include="app\DataProcessing\Parser.py">
       <SubType>Code</SubType>
     </Compile>
@@ -63,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="app\templates\app\text_list.html" />
+    <Content Include="app\templates\app\uniq.html" />
     <Content Include="requirements.txt" />
     <Content Include="db.sqlite3" />
     <Content Include="app\static\app\content\bootstrap.css" />
