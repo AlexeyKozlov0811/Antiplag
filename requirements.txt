@@ -1,3 +1,8 @@
 django >=1.9, <2
 BeautifulSoup >=4.4.0
 pycryptodomex >=3.8.2
+django-allauth =0.40.0 
+defusedxml =0.6.0 
+oauthlib =3.1.0 
+python3-openid =3.1.0 
+requests-oauthlib =1.2.0

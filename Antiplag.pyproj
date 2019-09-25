@@ -61,8 +61,11 @@
     <Folder Include="app\templates\app\" />
     <Folder Include="Antiplag\" />
     <Folder Include="app\DataProcessing\" />
+    <Folder Include="app\templates\account\" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="app\templates\account\base.html" />
+    <Content Include="app\templates\app\register.html" />
     <Content Include="app\templates\app\text_list.html" />
     <Content Include="app\templates\app\uniq.html" />
     <Content Include="requirements.txt" />
