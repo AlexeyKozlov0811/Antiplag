@@ -52,7 +52,7 @@ def about(request):
         }
     )
 
-
+"""Renders the about page."""
 def get(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
