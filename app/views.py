@@ -57,6 +57,7 @@ def get(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     all_text = Text.objects.all()
+    # Text.objects.all().delete()
     return render(
         request,
         'app/text_list.html',
@@ -67,46 +68,46 @@ def get(request):
 
 
 def create(request):
-    """Renders the about page."""
     assert isinstance(request, HttpRequest)
-    if request.method == "POST":
-        text = Text()
-        text.source = request.POST.get("Source")
-        text.content = request.POST.get("Content")
-        text.save()
+    text = Text()
+    if request.user.is_authenticated:
+        text.author = request.user.username
+    text.source = request.POST.get("Source")
+    text.content = request.POST.get("Content")
+    text.save()
     return HttpResponseRedirect("/")
 
 
 def check_uniq(request):
-    if request.method == "POST":
-        text = Text()
-        text.source = request.POST.get("Source")
-        text.content = request.POST.get("Content")
-        sources = []
-        percentage = []
-        all_text = Text.objects.all()
-        for text2 in all_text:
-            sources.append(text2.source)
-            percentage.append(compaire_texts(text.content, text2.content))
-            # uniq.update({text2.source : percentage})
-
-        urls = list(set(find_text_urls(text.content)))
-        for i in all_text:
-            try:
-                urls.remove(i.source)
-            except ValueError:
-                continue
-
-        sources.extend(urls)
-
-        for url in urls:
-            text2 = Text()
-            text2.source = url
-            text2.content = get_content(url)
-            percentage.append(compaire_texts(text.content, text2.content))
-            # uniq.update({text2.source : percentage})
-            text2.save()
-
-        if 100.0 not in percentage:
-            text.save()
-        return render(request, 'app/uniq.html', {'uniq': sources, 'percentage': percentage})
+    # text = Text()
+    #     # text.source = request.POST.get("Source")
+    #     # text.content = request.POST.get("Content")
+    sources = 1
+    percentage = 100
+    # all_text = Text.objects.all()
+    # for text2 in all_text:
+    #     sources.append(text2.source)
+    #     percentage.append(compaire_texts(text.content, text2.content))
+    #     # uniq.update({text2.source : percentage})
+    #
+    # urls = list(set(find_text_urls(text.content)))
+    # for i in all_text:
+    #     try:
+    #         urls.remove(i.source)
+    #     except ValueError:
+    #         continue
+    #
+    # sources.extend(urls)
+    #
+    # for url in urls:
+    #     text2 = Text()
+    #     text2.source = url
+    #     text2.content = get_content(url)
+    #     percentage.append(compaire_texts(text.content, text2.content))
+    #     # uniq.update({text2.source : percentage})
+    #     text2.save()
+    #
+    # if 100.0 not in percentage:
+    #     text.save()
+    # return render(request, 'app/uniq.html', {'uniq': sources, 'percentage': percentage})
+    return HttpResponseRedirect("/")

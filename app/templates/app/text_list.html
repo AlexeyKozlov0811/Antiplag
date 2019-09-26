@@ -30,9 +30,12 @@
      </form>
      <h3>Тексти</h3>
      {% for i in all_sources %}
-
-        <a href="{{ i.source }}">{{ i.source }}</a>
-        <p>{{ i.content }}</p>
+        {% if i.author == "Unknown" %}
+            <a href="{{ i.source }}">Джерело:{{ i.source }}</a>
+        {% else %}
+            <p>Автор: {{ i.author }}</p>
+        {% endif %}
+        <p>Зміст: {{ i.content }}</p>
         <br />
        
      {% endfor %}    
