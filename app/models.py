@@ -1,22 +1,13 @@
 from django.db import models
-from django.contrib.auth.models import User
-
-
-# Create your models here.
-
-
-class Account(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    teacher = models.BooleanField(default=False)
-
-    #def __init__(self, ):
+from datetime import datetime
 
 
 class Text(models.Model):
     author = models.CharField(max_length=255, verbose_name="Автор", default="Unknown")
     source = models.CharField(max_length=255, verbose_name="Джерело")
     content = models.TextField(verbose_name="Текст")
-    uniqueness = models.FloatField(default=0)
+    uniqueness = models.FloatField(default=0, verbose_name="Унікальність")
+    upload_date = models.DateField(default=datetime.today(), verbose_name="Дата завантаження")
 
     def __str__(self):
         return 'Джерело - {0}'.format(self.author)

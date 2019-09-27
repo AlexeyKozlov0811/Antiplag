@@ -42,29 +42,37 @@ def contact(request):
 def about(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
-    return render(
-        request,
-        'app/about.html',
-        {
-            'title': 'About',
-            'message': 'Your application description page.',
-            'year': datetime.now().year,
-        }
-    )
+    return render(request,
+                  'app/about.html',
+                  {'title': 'About',
+                   'message': 'Your application description page.',
+                   'year': datetime.now().year, }
+                  )
+
 
 """Renders the about page."""
+
+
 def get(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     all_text = Text.objects.all()
     # Text.objects.all().delete()
-    return render(
-        request,
-        'app/text_list.html',
-        {
-            'all_sources': all_text,
-        }
-    )
+    return render(request,
+                  'app/text_list.html',
+                  {'all_sources': all_text,}
+                  )
+
+
+def account_render(request):
+    """Renders the account page."""
+    assert isinstance(request, HttpRequest)
+    user_texts = Text.objects.filter(author=request.user.username)
+    # Text.objects.all().delete()
+    return render(request,
+                  'app/account.html',
+                  {'all_sources': user_texts,}
+                 )
 
 
 def create(request):
@@ -74,6 +82,7 @@ def create(request):
         text.author = request.user.username
     text.source = request.POST.get("Source")
     text.content = request.POST.get("Content")
+    # text.upload_date = datetime.now()
     text.save()
     return HttpResponseRedirect("/")
 

@@ -17,6 +17,4 @@ if __name__ == "__main__":
     execute_from_command_line(sys.argv)
 
 
-    # def delete_everything(self):
-    #     Text.objects.all().delete()
 

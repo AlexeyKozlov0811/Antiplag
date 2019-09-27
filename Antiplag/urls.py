@@ -2,7 +2,6 @@
 Definition of urls for Antiplag.
 """
 
-from datetime import datetime
 from django.conf.urls import url
 import django.contrib.auth.views
 from django.conf.urls.static import static
@@ -27,6 +26,9 @@ urlpatterns = [
     url(r'^text$', app.views.get, name='text'),
     url(r'^create/$', app.views.create, name='create'),
     url(r'^check_uniq/$', app.views.check_uniq, name='check_uniq'),
+    url(r'^account/$', app.views.account_render, name='account_render'),
+
+
     url(r'^accounts/', include('allauth.urls')),
 
     # url(r'^login/$',
