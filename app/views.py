@@ -59,8 +59,8 @@ def get(request):
     all_text = Text.objects.all()
     # Text.objects.all().delete()
     return render(request,
-                  'app/text_list.html',
-                  {'all_sources': all_text,}
+                  'app/text_add.html',
+                  {'all_sources': all_text, }
                   )
 
 
@@ -71,8 +71,8 @@ def account_render(request):
     # Text.objects.all().delete()
     return render(request,
                   'app/account.html',
-                  {'all_sources': user_texts,}
-                 )
+                  {'all_sources': user_texts},
+                  )
 
 
 def create(request):
@@ -85,6 +85,15 @@ def create(request):
     # text.upload_date = datetime.now()
     text.save()
     return HttpResponseRedirect("/")
+
+
+def text_details(request, pk):
+    assert isinstance(request, HttpRequest)
+    text = Text.objects.filter(id=pk)
+    return render(request,
+                  'app/text_details.html',
+                  {'text': text},
+                  )
 
 
 def check_uniq(request):

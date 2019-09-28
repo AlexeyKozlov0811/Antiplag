@@ -1,43 +1,11 @@
-{% extends "app/base.html" %}
-
-{% block content %}
-     <form method="POST" action="check_uniq/">
-        {% csrf_token %}
-        <p>
-            <label >Введіть джерело</label><br>
-            <input type="text" name="Source" required/>
-        </p>
-        <p>
-            <label>Введіть текст</label><br>
-            <textarea type="text" name="Content" required></textarea>
-        </p>
-        <input type="submit" value="Сохранить" >
-     </form>
-     <p>Унікальність тексту = </p>
-
-
-     <form method="POST" action="create/">
-        {% csrf_token %}
-        <p>
-            <label >Введіть джерело</label><br>
-            <input type="text" name="Source" required/>
-        </p>
-        <p>
-            <label>Введіть текст</label><br>
-            <textarea type="text" name="Content" required></textarea>
-        </p>
-        <input type="submit" value="Сохранить" >
-     </form>
-     <h3>Тексти</h3>
-     {% for i in all_sources %}
+{% for i in all_sources %}
+    <div class="text_list">
         {% if i.author == "Unknown" %}
-            <a href="{{ i.source }}">Джерело:{{ i.source }}</a>
+            <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
         {% else %}
-            <p>Автор: {{ i.author }}</p>
+            <p class="text_source">Автор: {{ i.author }}</p>
         {% endif %}
-        <p>Зміст: {{ i.content }}</p>
-        <br />
-       
-     {% endfor %}    
-
-{% endblock %}
+        <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
+        <a class="text_details" href="/text/{{i.id}}">Переглянути детально</a>
+    </div>
+{% endfor %}

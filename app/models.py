@@ -3,6 +3,7 @@ from datetime import datetime
 
 
 class Text(models.Model):
+    id = models.AutoField(primary_key=True)
     author = models.CharField(max_length=255, verbose_name="Автор", default="Unknown")
     source = models.CharField(max_length=255, verbose_name="Джерело")
     content = models.TextField(verbose_name="Текст")

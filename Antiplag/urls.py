@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^create/$', app.views.create, name='create'),
     url(r'^check_uniq/$', app.views.check_uniq, name='check_uniq'),
     url(r'^account/$', app.views.account_render, name='account_render'),
+    url(r'^text/(?P<pk>\d+)/$', app.views.text_details),
 
 
     url(r'^accounts/', include('allauth.urls')),
