@@ -1,0 +1,11 @@
+{% for i in all_sources %}
+    <div class="text_list">
+        {% if i.author == "Unknown" %}
+            <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
+        {% else %}
+            <p class="text_source">Автор: {{ i.author }}</p>
+        {% endif %}
+        <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
+        <a class="text_details" href="/text/{{i.id}}">Переглянути детально</a>
+    </div>
+{% endfor %}
