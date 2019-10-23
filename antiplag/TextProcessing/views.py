@@ -3,8 +3,9 @@ Definition of views.
 """
 from .models import Text
 from django.shortcuts import render
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.http import HttpResponseRedirect
+from .tasks import adding_task
 
 
 def home(request):
@@ -49,3 +50,8 @@ def text_details(request, pk):
 
 def check_uniqueness(request):
     return HttpResponseRedirect("/")
+
+
+def celery_check(request):
+    adding_task.delay(5, 5)
+    return HttpResponse("DONE")

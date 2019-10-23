@@ -1,12 +1,24 @@
 version: "3"
 
 services:
-  test:
+  antiplag-service:
     build:
       context: .
     ports:
       - "8000:8000"
     volumes:
-      - ./test:/test
+      - ./antiplag:/antiplag
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
+  celery:
+    build: .
+    command: celery -A Antiplag worker -l info -P eventlet
+    volumes:
+      - ./antiplag:/antiplag
+    links:
+      - redis
+    depends_on:
+      - redis
+    redis:
+      image: redis:latest
+      command: redis-server

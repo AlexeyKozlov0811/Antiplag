@@ -5,9 +5,9 @@ ENV PYTHONUNBUFFERED 1
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
-RUN mkdir /test
-WORKDIR /test
-COPY ./test /test
+RUN mkdir /antiplag
+WORKDIR /antiplag
+COPY ./antiplag /antiplag
 
 RUN adduser -D user
 USER user
