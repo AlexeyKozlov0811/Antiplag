@@ -3,7 +3,7 @@
 import binascii
 from pymorphy2 import MorphAnalyzer
 
-morph = MorphAnalyzer(lang="uk")
+morph = MorphAnalyzer(lang='uk')
 
 
 def canonize(source):
@@ -48,7 +48,8 @@ def canonize(source):
     # return ([x for x in [y.strip(stop_symbols) for y in source.lower().split()] if x and (x not in stop_words)])
 
 
-def gen_shingle(source, key):
+# generates shingles, if key = 1, that means that we make shingles out of canonized text, if key = 0, ...out of hashes
+def shingle_generation(source, key):
     shingle_len = 4  # длина шингла
     out = []
     words = []
@@ -58,27 +59,48 @@ def gen_shingle(source, key):
             words.append(' '.join([x for x in source[i:i + shingle_len]]))
             words_crc.append(binascii.crc32(' '.join([x for x in source[i:i + shingle_len]]).encode('utf-8')))
         out.append(binascii.crc32(' '.join([x for x in source[i:i + shingle_len]]).encode('utf-8')))
-    words_dict = dict(zip(words_crc, words))
+    words_dict = dict(zip(words_crc, words))  # zip -  creates dictionary where keys are elements of words_crc
     if key == 1:
         return words_dict
     return out
 
 
-def compare(source1, source2):
+# compares texts and returns list of similar hashed shingles
+def comparation(source1, source2):
     same = 0
-    s = []
+    similar_phrases = []
     for i in range(len(source1)):
         if source1[i] in source2:
             same = same + 1
-            s.append(source1[i])
-    # print(len(s))
-    # print(s)
-    return s
-    # return same / float(len(source1) + len(source2) - same) * 100
-    # return same*2/float(len(source1) + len(source2))*100
+            similar_phrases.append(source1[i])
+    return similar_phrases
 
 
-def similarity_percentage(source1, source2, same):
+# puts together all the words that
+def similar_areas_definition(text1_dictionary, compared_texts):
+    areas = []
+    for k in range(len(compared_texts)):
+        if compared_texts[k] in text1_dictionary:
+            areas.append((text1_dictionary.get(compared_texts[k])))
+        else:
+            print("false")
+    new = []
+    for l in range(len(areas)):
+        new.append(areas[l].split(' '))
+    areas = new
+    defined_area = []
+    for i in range(len(areas)):
+        for j in range((len(areas[i]))):
+            if i+1 < (len(areas)):
+                if areas[i][j] != areas[i+1][j - 1]:
+                    defined_area.append(areas[i][j])
+
+    defined_area = defined_area + areas[(len(areas)-1)]
+    return defined_area
+
+
+# counts the percentage of two texts, will be changed later
+def similarity_percentage_calculation(source1, source2, same):
     return len(same) / float(len(source1) + len(source2) - len(same)) * 100
 
 
@@ -93,44 +115,17 @@ if __name__ == "__main__":
 
     text1 = u'На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
             u'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
-            u'бойових сокир, чорноліської тощо. Після монгольської навали її спадкоємцем стало ' \
-            u'Руське королівство XIII—XIV століття.'  # Текст 2 для сравнения
+            u'бойових сокир, чорноліської тощо. Как видно из примера, присвоение по новому ключу расширяет словарь, ' \
+            u'присвоение по существующему ключу перезаписывает его, а попытка извлечения несуществующего ключа ' \
+            u'порождает исключение.'  # Текст 2 для сравнения
 
-    # text2 = u'В античні часи на території України виникли державні утворення скіфів, давньогрецьких колоністів,
-    # готів, але відправним пунктом української слов\'янської державності й культури вважається Київська Русь IX—XIII
-    # століть.' # Текст 2 для сравнения
+    shingle_dict = shingle_generation(canonize(text1), 1)
 
-    # print(len(text2.split()))
+    shingled_canonized_text1 = shingle_generation(canonize(text1), 0)
+    shingled_canonized_text2 = shingle_generation(canonize(text2), 0)
 
-    shingle_dict = gen_shingle(canonize(text1), 1)
+    similar = comparation(shingled_canonized_text1, shingled_canonized_text2)
 
-    cmp1 = gen_shingle(canonize(text1), 0)
-    cmp2 = gen_shingle(canonize(text2), 0)
+    print(similar_areas_definition(shingle_dict, similar))
 
-    # print(cmp1, "\n\n")
-    # print(cmp2, "\n\n")
-
-    # hashed_str1 = []
-    # str1 = canonize(text1)
-    # str1_ = ' '.join(str1)
-    #
-    # for j in range(len(str1)):
-    #     hashed_str1.append(binascii.crc32(' '.join(str1_[j]).encode('utf-8')))
-    #
-    # hashed_str1_and_str1 = dict(zip(hashed_str1, str1))
-    #
-    # print(hashed_str1_and_str1, "\n\n")
-    print(cmp1, "\n\n")
-
-    similar = compare(cmp1, cmp2)
-    print(shingle_dict, "\n\n")
-    print(similarity_percentage(cmp1, cmp2, similar), "\n\n")
-    # print(len(compare(cmp1, cmp2)))
-
-    a = []
-    for k in range(len(shingle_dict)):
-        if cmp1[k] in shingle_dict:
-            a.append((shingle_dict.get(cmp1[k])))
-        else:
-            print("false")
-    print(a)
+    print(similarity_percentage_calculation(shingled_canonized_text1, shingled_canonized_text2, similar))
