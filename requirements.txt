@@ -5,3 +5,5 @@ django-allauth >=0.40.0,<0.41.0
 celery >=4.3.0,<4.4.0
 redis >=3.3.11,<3.4.0
 eventlet >0.25.1,<0.26.0
+git+https://github.com/kmike/pymorphy2.git
+pymorphy2-dicts-uk >=2.4.1.1.1460299261,<2.5
