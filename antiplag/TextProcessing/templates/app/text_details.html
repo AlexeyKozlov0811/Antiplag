@@ -8,7 +8,11 @@
                 <p class="text_source">Автор: {{ i.author }}</p>
             {% endif %}
             <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
-            <p>Унікальність = {{i.uniqueness}}</p>
+            {% if i.uniqueness == -1.0 %}
+                <p>Унікальність = не перевірено</p>
+            {% else %}
+                <p>Унікальність = {{i.uniqueness}}</p>
+            {% endif %}
             <p>Зміст: {{i.content}}</p>
         </div>
     {% endfor %}

@@ -14,11 +14,11 @@
 <!--        <input type="submit" value="Сохранить" >-->
 <!--    </form>-->
 
-    <form method="POST" action="create/">
+    <form method="POST" action="process_text/">
         {% csrf_token %}
         <p>
             <label >Введіть джерело</label><br>
-            <input type="text" name="Source" required/>
+            <input type="text" name="Source"/>
         </p>
         <p>
             <label>Введіть текст</label><br>

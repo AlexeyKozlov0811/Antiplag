@@ -12,7 +12,7 @@ services:
       sh -c "python manage.py runserver 0.0.0.0:8000"
   celery:
     build: .
-    command: celery -A Antiplag worker -l info -P eventlet
+    command: celery -A Antiplag worker --pool=solo -l info
     volumes:
       - ./antiplag:/antiplag
     links:

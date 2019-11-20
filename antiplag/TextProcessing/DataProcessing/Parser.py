@@ -1,7 +1,8 @@
 import math
 import requests
 from bs4 import BeautifulSoup
-from .DataProcessingSettings import pages
+
+pages = 1
 
 
 # function returns webpage html code or 0 in case of failure
@@ -79,11 +80,11 @@ def find_text_urls(text):
     AllParts = text_separation(text)
     for Query in AllParts:
         try:
-            Urls.extend(search_parsing(Query)[0])
+            Urls.append(search_parsing(Query)[0])
         except IndexError:
             return 0
         else:
-            return Urls
+            return list(set(Urls))
 
 
 # debug
@@ -134,4 +135,6 @@ if __name__ == "__main__":
             "Python 3.7 і 2.7). Розробники мови Python є прихильниками певної філософії програмування, яку називають " \
             "«The Zen of Python» («Дзен Пайтона»)[11]. Її текст можна отримати у інтерпретаторі Python за допомогою " \
             "команди import this (лише один раз за сесію). Автором цієї філософії вважається Тім Пейтерс. "
-    print(get_content(search_parsing(text_separation(query)[0])[0]))
+    # print(get_content(search_parsing(text_separation(query)[0])[0]))
+    # print(search_parsing(text_separation(query)[0]))
+    print(find_text_urls(query))

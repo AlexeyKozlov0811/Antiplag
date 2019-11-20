@@ -3,17 +3,17 @@ Definition of views.
 """
 from .models import Text
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse
-from django.http import HttpResponseRedirect
-from .tasks import adding_task
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from .tasks import check_uniqueness
 
 
 def home(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     all_text = Text.objects.all()
+    # Text.objects.all().delete()
     return render(request,
-                  'TextProcessing/text_add.html',
+                  'app/text_add.html',
                   {'all_sources': all_text, }
                   )
 
@@ -23,12 +23,12 @@ def account_render(request):
     assert isinstance(request, HttpRequest)
     user_texts = Text.objects.filter(author=request.user.username)
     return render(request,
-                  'TextProcessing/account.html',
+                  'app/account.html',
                   {'all_sources': user_texts},
                   )
 
 
-def create(request):
+def create_text(request):
     assert isinstance(request, HttpRequest)
     text = Text()
     if request.user.is_authenticated:
@@ -36,22 +36,20 @@ def create(request):
     text.source = request.POST.get("Source")
     text.content = request.POST.get("Content")
     text.save()
-    return HttpResponseRedirect("/")
+    return text
 
 
 def text_details(request, pk):
     assert isinstance(request, HttpRequest)
     text = Text.objects.filter(id=pk)
     return render(request,
-                  'TextProcessing/text_details.html',
+                  'app/text_details.html',
                   {'text': text},
                   )
 
 
-def check_uniqueness(request):
+def process_text(request):
+    text = create_text(request)
+    check_uniqueness.delay(text.id)
     return HttpResponseRedirect("/")
 
-
-def celery_check(request):
-    adding_task.delay(5, 5)
-    return HttpResponse("DONE")

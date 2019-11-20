@@ -82,8 +82,6 @@ def similar_areas_definition(text1_dictionary, compared_texts):
     for k in range(len(compared_texts)):
         if compared_texts[k] in text1_dictionary:
             areas.append((text1_dictionary.get(compared_texts[k])))
-        else:
-            print("false")
     new = []
     for l in range(len(areas)):
         new.append(areas[l].split(' '))
@@ -99,9 +97,11 @@ def similar_areas_definition(text1_dictionary, compared_texts):
     return defined_area
 
 
-# counts the percentage of two texts, will be changed later
-def similarity_percentage_calculation(source1, source2, same):
-    return len(same) / float(len(source1) + len(source2) - len(same)) * 100
+# counts the percentage of two texts
+def similarity_percentage_calculation(source, same):
+    print(len(same))
+    print(len(source))
+    return float(format(100 - len(same) / float(len(source)) * 100, '.2f'))
 
 
 if __name__ == "__main__":
@@ -119,13 +119,25 @@ if __name__ == "__main__":
             u'присвоение по существующему ключу перезаписывает его, а попытка извлечения несуществующего ключа ' \
             u'порождает исключение.'  # Текст 2 для сравнения
 
+    text3 = u'На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
+            u'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
+            u'бойових сокир, чорноліської тощо. В античні часи на території України виникли державні утворення ' \
+            u'скіфів, давньогрецьких колоністів, готів, але відправним пунктом української слов\'янської державності ' \
+            u'й культури вважається Київська Русь IX—XIII століть. Після монгольської навали її спадкоємцем стало ' \
+            u'Руське королівство XIII—XIV століття. Воно було поглинуте сусідніми Литвою та Польщею, ' \
+            u'об\'єднаними з XVI століття у федеративну Річ Посполиту.'  # Текст 1 для сравнения
+
     shingle_dict = shingle_generation(canonize(text1), 1)
 
     shingled_canonized_text1 = shingle_generation(canonize(text1), 0)
     shingled_canonized_text2 = shingle_generation(canonize(text2), 0)
+    shingled_canonized_text3 = shingle_generation(canonize(text3), 0)
 
     similar = comparation(shingled_canonized_text1, shingled_canonized_text2)
+    similar += comparation(shingled_canonized_text1, shingled_canonized_text3)
+
+    print(similar)
 
     print(similar_areas_definition(shingle_dict, similar))
 
-    print(similarity_percentage_calculation(shingled_canonized_text1, shingled_canonized_text2, similar))
+    print(similarity_percentage_calculation(shingled_canonized_text1, similar))
