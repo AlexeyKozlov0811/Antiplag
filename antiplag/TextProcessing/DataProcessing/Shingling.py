@@ -7,7 +7,7 @@ morph = MorphAnalyzer(lang='uk')
 
 
 def canonize(source):
-    stop_symbols = '[].,!?:;-\'\"—\n\r()'
+    stop_symbols = '[].,!?:;-\'\"—\n\r()«»'
     stop_words = (u'і', u'й', u'так',  # сполучники
                   u'а', u'але', u'та',
                   u'бо', u'як', u'що',
@@ -67,13 +67,25 @@ def shingle_generation(source, key):
 
 # compares texts and returns list of similar hashed shingles
 def comparation(source1, source2):
-    same = 0
+    # same = 0
     similar_phrases = []
     for i in range(len(source1)):
         if source1[i] in source2:
-            same = same + 1
+            # same = same + 1
             similar_phrases.append(source1[i])
+    print(similar_phrases)
     return similar_phrases
+
+
+def DuplicateSearch(similar_phrases_1, similar_phrases_2):
+    without_duplicates = similar_phrases_1
+    if similar_phrases_1 == similar_phrases_2:
+        return similar_phrases_1
+    else:
+        for i in range(len(similar_phrases_2)):
+            if similar_phrases_2[i] not in without_duplicates:
+                without_duplicates.append(similar_phrases_2[i])
+    return without_duplicates
 
 
 # puts together all the words that
@@ -91,41 +103,57 @@ def similar_areas_definition(text1_dictionary, compared_texts):
     defined_area = []
     for i in range(len(areas)):
         for j in range((len(areas[i]))):
-            if i+1 < (len(areas)):
-                if areas[i][j] != areas[i+1][j - 1]:
+            if i + 1 < (len(areas)):
+                if areas[i][j] != areas[i + 1][j - 1]:
                     defined_area.append(areas[i][j])
 
-    defined_area = defined_area + areas[(len(areas)-1)]
+    defined_area = defined_area + areas[(len(areas) - 1)]
     return defined_area
 
 
 # counts the percentage of two texts, will be changed later
-def similarity_percentage_calculation(source1, source2, same):
-    return len(same) / float(len(source1) + len(source2) - len(same)) * 100
+def similarity_percentage_calculation(source, same):
+    return float(format(100 - len(same) / float(len(source)) * 100, '.2f'))
 
 
 if __name__ == "__main__":
-    text2 = u'На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
+    text1 = u'Київ здавна розташовувався на перетині важливих шляхів. Ще за Київської Русі таким шляхом був ' \
+            u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
+            u'шляхи. На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
+            'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
+            u'бойових сокир, чорноліської тощо. Как видно из примера, присвоение по новому ключу расширяет словарь, ' \
+            u'присвоение по существующему ключу перезаписывает его, а попытка извлечения несуществующего ключа ' \
+            u'порождает исключение. Місто розташоване на півночі України, на межі Полісся і лісостепу по обидва ' \
+            u'береги Дніпра в його середній течії.'
+
+    text2 = u'Київ здавна розташовувався на перетині важливих шляхів. Ще за Київської Русі таким шляхом був ' \
+            u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
+            u'шляхи. На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
             u'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
             u'бойових сокир, чорноліської тощо. В античні часи на території України виникли державні утворення ' \
             u'скіфів, давньогрецьких колоністів, готів, але відправним пунктом української слов\'янської державності ' \
             u'й культури вважається Київська Русь IX—XIII століть. Після монгольської навали її спадкоємцем стало ' \
             u'Руське королівство XIII—XIV століття. Воно було поглинуте сусідніми Литвою та Польщею, ' \
-            u'об\'єднаними з XVI століття у федеративну Річ Посполиту.'  # Текст 1 для сравнения
+            u'об\'єднаними з XVI століття у федеративну Річ Посполиту.'
 
-    text1 = u'На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
+    text3 = u'На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
             u'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
-            u'бойових сокир, чорноліської тощо. Как видно из примера, присвоение по новому ключу расширяет словарь, ' \
-            u'присвоение по существующему ключу перезаписывает его, а попытка извлечения несуществующего ключа ' \
-            u'порождает исключение.'  # Текст 2 для сравнения
+            u'бойових сокир, чорноліської тощо. В античні часи на території України виникли державні утворення ' \
+            u'скіфів, давньогрецьких колоністів, готів, але відправним пунктом української слов\'янської державності ' \
+            u'й культури вважається Київська Русь IX—XIII століть. Після монгольської навали її спадкоємцем стало ' \
+            u'Руське королівство XIII—XIV століття. Воно було поглинуте сусідніми Литвою та Польщею, ' \
+            u'об\'єднаними з XVI століття у федеративну Річ Посполиту. Місто розташоване на півночі України, ' \
+            u'на межі Полісся і лісостепу по обидва береги Дніпра в його середній течії. Площа міста 836 км. Довжина ' \
+            u'вздовж берега — понад 20 км. '
 
     shingle_dict = shingle_generation(canonize(text1), 1)
 
     shingled_canonized_text1 = shingle_generation(canonize(text1), 0)
     shingled_canonized_text2 = shingle_generation(canonize(text2), 0)
+    shingled_canonized_text3 = shingle_generation(canonize(text3), 0)
 
-    similar = comparation(shingled_canonized_text1, shingled_canonized_text2)
+    similar = DuplicateSearch(comparation(shingled_canonized_text1, shingled_canonized_text2), comparation(shingled_canonized_text1, shingled_canonized_text3))
 
     print(similar_areas_definition(shingle_dict, similar))
 
-    print(similarity_percentage_calculation(shingled_canonized_text1, shingled_canonized_text2, similar))
+    print(similarity_percentage_calculation(shingled_canonized_text1, similar))
