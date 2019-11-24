@@ -157,3 +157,4 @@ if __name__ == "__main__":
     print(similar_areas_definition(shingle_dict, similar))
 
     print(similarity_percentage_calculation(shingled_canonized_text1, similar))
+
