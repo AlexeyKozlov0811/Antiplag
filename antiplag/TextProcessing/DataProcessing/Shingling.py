@@ -29,6 +29,7 @@ def shingle_generation(source):
     return out
 
 
+# Splits the text and returns dictionary of hashes and phrases
 def text_splitting(text):
     hashes = shingle_generation(canonize(text))
     separated_text = text.split()
