@@ -111,6 +111,7 @@ def similar_areas_definition(text1_dictionary, compared_texts):
             areas_str = areas_str.split()
             defined_area += ' '.join(areas_str[areas_str.index(word) + 1:len(new[k])]) + " "
     list_of_areas = defined_area.split('#')
+    del list_of_areas[0]
     print(list_of_areas)
     return list_of_areas
 
