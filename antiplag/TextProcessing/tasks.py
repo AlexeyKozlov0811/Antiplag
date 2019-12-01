@@ -1,10 +1,9 @@
-
-
 from celery import shared_task
 from .DataProcessing.Parser import *
 from .DataProcessing.Shingling import *
 from .models import Text
 import json
+
 
 @shared_task
 def check_uniqueness(user_text_id):

@@ -1,31 +1,10 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<!--    <form method="POST" action="check_uniq/">-->
-<!--        {% csrf_token %}-->
-<!--        <p>-->
-<!--            <label >Введіть джерело</label><br>-->
-<!--            <input type="text" name="Source" required/>-->
-<!--        </p>-->
-<!--        <p>-->
-<!--            <label>Введіть текст</label><br>-->
-<!--            <textarea type="text" name="Content" required></textarea>-->
-<!--        </p>-->
-<!--        <input type="submit" value="Сохранить" >-->
-<!--    </form>-->
-
-    <form method="POST" action="process_text/">
+    <h3>Введіть текст</h3>
+    <form class="text_add_form" method="POST" action="process_text/">
         {% csrf_token %}
-        <p>
-            <label >Введіть джерело</label><br>
-            <input type="text" name="Source"/>
-        </p>
-        <p>
-            <label>Введіть текст</label><br>
-            <textarea type="text" name="Content" required></textarea>
-        </p>
-        <input type="submit" value="Сохранить" >
+        <textarea class="text_add_area" name="Content" required cols="50" rows="30"></textarea>
+        <button class="text_add_button" type="submit">Перевірити</button>
     </form>
-    <h3>Тексти</h3>
-    {% include "app/text_list.html"%}
 {% endblock %}

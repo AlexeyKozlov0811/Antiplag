@@ -11,9 +11,18 @@ def home(request):
     """Renders the about page."""
     assert isinstance(request, HttpRequest)
     all_text = Text.objects.all()
-    # Text.objects.all().delete()
     return render(request,
                   'app/text_add.html',
+                  {'all_sources': all_text, }
+                  )
+
+
+def texts(request):
+    """Renders the about page."""
+    assert isinstance(request, HttpRequest)
+    all_text = Text.objects.all()
+    return render(request,
+                  'app/text_catalog.html',
                   {'all_sources': all_text, }
                   )
 
@@ -33,7 +42,6 @@ def create_text(request):
     text = Text()
     if request.user.is_authenticated:
         text.author = request.user.username
-    text.source = request.POST.get("Source")
     text.content = request.POST.get("Content")
     text.save()
     return text

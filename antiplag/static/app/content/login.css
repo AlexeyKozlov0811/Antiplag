@@ -1,0 +1,55 @@
+.login,.signup{
+    width: 340px;
+    margin: 0 auto;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    padding: 18px;
+    margin-bottom: 17px;
+    text-align: center;
+}
+
+.remember{
+    padding: 0;
+    display: inline-block;
+    margin-bottom: 0px;
+}
+
+.socialaccount_providers{
+    text-align: center;
+    padding: 0;
+}
+
+.auth_header{
+    text-align: center;
+}
+
+.login_hr{
+    display: none;
+    margin: 10px 0px;
+}
+
+@media screen and (max-width: 380px) {
+	.login,.signup,.text_add_form,.text_list{
+		width: 90%;
+	}
+}
+
+@media (max-width: 600px) {
+	.login,.signup,.text_add_form,.text_list{
+		flex-direction: column;
+	}
+
+	.text_area{
+        height: 84px;
+    }
+}
+
+@media (max-width: 767px) {
+  .login_hr{
+    display: block;
+    margin: 10px 0px;
+  }
+}

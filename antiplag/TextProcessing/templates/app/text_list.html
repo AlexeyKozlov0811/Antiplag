@@ -1,11 +1,26 @@
 {% for i in all_sources %}
-    <div class="text_list">
-        {% if i.author == "Unknown" %}
-            <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
-        {% else %}
-            <p class="text_source">Автор: {{ i.author }}</p>
-        {% endif %}
-        <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
-        <a class="text_details" href="/text/{{i.id}}">Переглянути детально</a>
-    </div>
+<!--    <div class="text_list">-->
+<!--        {% if i.author == "Unknown" %}-->
+<!--            <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>-->
+<!--        {% else %}-->
+<!--            <p class="text_source">Автор: {{ i.author }}</p>-->
+<!--        {% endif %}-->
+<!--        <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>-->
+<!--        <a class="text_details" href="/text/{{i.id}}">Переглянути детально</a>-->
+<!--    </div>-->
+    <form class="text_list" action="/text/{{i.id}}">
+        <div class="text_info">
+            {% if i.author == "Unknown" %}
+                <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
+            {% else %}
+                <p class="text_source">Автор: {{ i.author }}</p>
+            {% endif %}
+            <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
+            <button class="text_details" type="submit">Переглянути детально</button>
+        </div>
+        <div class="text_space"></div>
+        <div class="text_info">
+            <textarea class="text_area" disabled name="Content">{{ i.content }}</textarea>
+        </div>
+    </form>
 {% endfor %}

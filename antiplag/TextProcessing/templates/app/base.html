@@ -3,10 +3,14 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ title }} - My Django Application</title>
+    <title>{{ title }}Antiplag</title>
     {% load staticfiles %}
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/site.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/text_add.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/login.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/text.css' %}" />
+    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}">
     <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
 </head>
 
@@ -22,8 +26,10 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'home' %}">Домашня сторінка</a></li>
+                    <li><a href="{% url 'texts' %}">Каталог текстів</a></li>
                 </ul>
+                <hr class="login_hr"/>
                 {% include 'app/loginpartial.html' %}
             </div>
         </div>
@@ -34,7 +40,7 @@
         {% endblock %}
         <hr/>
         <footer>
-            <p>&copy; {{ year }} - My Django Application</p>
+            <p>&copy; {{ year }}Antiplag</p>
         </footer>
     </div>
 

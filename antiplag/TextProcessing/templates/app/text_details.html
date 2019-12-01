@@ -1,19 +1,21 @@
 {% extends "app/base.html" %}
 {% block content %}
     {% for i in text %}
-        <div class="text_list">
-            {% if i.author == "Unknown" %}
-                <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
-            {% elif i.author != user.username %}
-                <p class="text_source">Автор: {{ i.author }}</p>
-            {% endif %}
-            <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
-            {% if i.uniqueness == -1.0 %}
-                <p>Унікальність = не перевірено</p>
-            {% else %}
-                <p>Унікальність = {{i.uniqueness}}</p>
-            {% endif %}
+        <form class="text_details_form" method="POST" action="process_text/">
+            <div>
+                {% if i.author == "Unknown" %}
+                    <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
+                {% elif i.author != user.username %}
+                    <p class="text_source">Автор: {{ i.author }}</p>
+                {% endif %}
+                <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
+                {% if i.uniqueness == -1.0 %}
+                    <p>Унікальність = не перевірено</p>
+                {% else %}
+                    <p>Унікальність = {{i.uniqueness}}</p>
+                {% endif %}
+            </div>
             <p>Зміст: {{i.content}}</p>
-        </div>
+        </form>
     {% endfor %}
 {% endblock %}

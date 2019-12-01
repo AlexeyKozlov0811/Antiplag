@@ -125,10 +125,6 @@ LANGUAGE_CODE = 'ru-RU'
 
 TIME_ZONE = 'UTC'
 
-# DATE_FORMAT = "d.m.Y"
-
-# DATE_INPUT_FORMATS = '%d.%m.%Y'
-
 USE_I18N = True
 
 USE_L10N = True
@@ -136,6 +132,8 @@ USE_L10N = True
 USE_TZ = True
 
 SITE_ID = 1
+
+SITE_NAME = "Antiplag"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
