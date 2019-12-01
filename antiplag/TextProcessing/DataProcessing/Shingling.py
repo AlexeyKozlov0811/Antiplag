@@ -2,7 +2,9 @@
 
 import binascii
 from pymorphy2 import MorphAnalyzer
-from StopSymbols import *
+# import StopSymbols
+
+from antiplag.TextProcessing.DataProcessing.StopSymbols import stop_words, stop_symbols
 
 morph = MorphAnalyzer(lang='uk')
 
@@ -23,7 +25,7 @@ def shingle_generation(source):
     out = []
     words = []
     words_crc = []
-    for i in range(len(source) - (shingle_len + 1)):
+    for i in range(len(source) - (shingle_len - 1)):
         out.append(binascii.crc32(' '.join([x for x in source[i:i + shingle_len]]).encode('utf-8')))
     words_dict = dict(zip(words_crc, words))  # zip -  creates dictionary where keys are elements of words_crc
     return out
@@ -36,13 +38,16 @@ def text_splitting(text):
     separated_list = []
     separated_str = ""
     shingle_len = 4
+    start_index = 0
     i = 0
     while int(i) < len(separated_text):
         if separated_text[i] not in stop_words:
             shingle_len -= 1
             if shingle_len == 2:
                 start_index = i
-        separated_str += separated_text[i] + " "
+        separated_str += separated_text[i]
+        if shingle_len != 0:
+            separated_str += " "
         if shingle_len == 0:
             separated_list.append(separated_str)
             shingle_len = 4
@@ -50,6 +55,7 @@ def text_splitting(text):
             i = start_index
         else:
             i += 1
+    print(separated_list)
     words_dict = dict(zip(hashes, separated_list))
     return words_dict
 
@@ -62,7 +68,6 @@ def comparation(source1, source2):
         if source1[i] in source2:
             # same = same + 1
             similar_phrases.append(source1[i])
-    # print(similar_phrases)
     return similar_phrases
 
 
@@ -77,26 +82,34 @@ def comparation(source1, source2):
 #     return without_duplicates
 
 
-# puts together all the words that
+# returns common parts of the texts
 def similar_areas_definition(text1_dictionary, compared_texts):
     areas = []
+    new = []
+    defined_area = ""
+    word = ""
+    areas_str = ""
+    counter = 0
     for k in range(len(compared_texts)):
         if compared_texts[k] in text1_dictionary:
             areas.append((text1_dictionary.get(compared_texts[k])))
         else:
             print("false")
-    new = []
-    for l in range(len(areas)):
-        new.append(areas[l].split(' '))
-    areas = new
-    defined_area = []
-    for i in range(len(areas)):
-        for j in range((len(areas[i]))):
-            if i + 1 < (len(areas)):
-                if areas[i][j] != areas[i + 1][j - 1]:
-                    defined_area.append(areas[i][j])
-
-    defined_area = defined_area + areas[(len(areas) - 1)]
+    for k in range(len(areas)):
+        new.append(areas[k].split(' '))
+        for l in range(len(new[k])):
+            ind = new[k][l]
+            if new[k][l] not in stop_words:
+                counter += 1
+                if counter == 3:
+                    word = new[k][l]
+        areas_str = ' '.join(new[k])
+        counter = 0
+        if word not in defined_area:
+            defined_area += areas_str + " "
+        else:
+            areas_str = areas_str.split()
+            defined_area += ' '.join(areas_str[areas_str.index(word) + 1:len(new[k])]) + " "
     return defined_area
 
 
@@ -123,10 +136,11 @@ if __name__ == "__main__":
             u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
             u'шляхи. На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
             'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
-            u'бойових сокир, чорноліської тощо. Как видно из примера, присвоение по новому ключу расширяет словарь, ' \
-            u'присвоение по существующему ключу перезаписывает его, а попытка извлечения несуществующего ключа ' \
-            u'порождает исключение. Місто розташоване на півночі України, на межі Полісся і лісостепу по обидва ' \
-            u'береги Дніпра в його середній течії.'
+            u'бойових сокир, чорноліської тощо. Епітет — це слово чи словосполучення, завдяки особливій функції в ' \
+            u'тексті, допомагає слову набути нового значення або смислового відтінку, підкреслює характерну рису, ' \
+            u'визначальну якість певного предмету або явища, збагачує мову новим емоційним сенсом, додає до тексту ' \
+            u'певної мальовничості та насиченості. Місто розташоване на півночі України, на межі Полісся і лісостепу ' \
+            u'по обидва береги Дніпра в його середній течії.'
 
     text2 = u'Київ здавна розташовувався на перетині важливих шляхів. Ще за Київської Русі таким шляхом був ' \
             u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
@@ -156,10 +170,6 @@ if __name__ == "__main__":
     shingled_canonized_text2 = shingle_generation(canonize(text2))
     shingled_canonized_text3 = shingle_generation(canonize(text3))
 
-    # similar = DuplicateSearch(comparation(shingled_canonized_text1, shingled_canonized_text2), comparation(shingled_canonized_text1, shingled_canonized_text3))
-
-
-
     similar_1 = comparation(shingled_canonized_text1, shingled_canonized_text2)
     similar_2 = comparation(shingled_canonized_text1, shingled_canonized_text3)
 
@@ -173,8 +183,8 @@ if __name__ == "__main__":
 
     similar_1 += similar_2
 
-    print(similar_1)
-
+    # print(similar_1)
+    #
     print(similar_areas_definition(shingle_dict, similar_1))
-
-    print(similarity_percentage_calculation(shingled_canonized_text1, similar_1))
+    #
+    # print(similarity_percentage_calculation(shingled_canonized_text1, similar_1))
