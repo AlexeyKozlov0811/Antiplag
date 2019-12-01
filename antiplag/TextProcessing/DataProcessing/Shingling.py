@@ -106,11 +106,13 @@ def similar_areas_definition(text1_dictionary, compared_texts):
         areas_str = ' '.join(new[k])
         counter = 0
         if word not in defined_area:
-            defined_area += areas_str + " "
+            defined_area += "#" + areas_str + " "
         else:
             areas_str = areas_str.split()
             defined_area += ' '.join(areas_str[areas_str.index(word) + 1:len(new[k])]) + " "
-    return defined_area
+    list_of_areas = defined_area.split('#')
+    print(list_of_areas)
+    return list_of_areas
 
 
 def duplicate_clear(old_similar_phrases, new_similar_phrases):
