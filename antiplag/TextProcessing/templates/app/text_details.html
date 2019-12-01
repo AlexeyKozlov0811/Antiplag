@@ -15,7 +15,7 @@
                     <p>Унікальність = {{i.uniqueness}}</p>
                 {% endif %}
             </div>
-            <p>Зміст: {{i.content}}</p>
+            <p>Зміст: {{i.content|safe}}</p>
         </form>
     {% endfor %}
 {% endblock %}

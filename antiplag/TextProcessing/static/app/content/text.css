@@ -25,6 +25,10 @@
     width: 20px;
 }
 
+.burrowed_content{
+    color: red;
+}
+
 @media (max-width: 600px) {
 	.text_area{
         height: 84px;

@@ -24,7 +24,7 @@ def check_web(user_text_id):
                 web_text.content = get_content(url)
                 web_text.uniqueness = -1.0
                 if web_text.content != 0:
-                    web_text.shingled_content = json.dumps(shingle_generation(canonize(web_text.content), 0))
+                    web_text.shingled_content = json.dumps(shingle_generation(canonize(web_text.content)))
                     web_text.save()
                 else:
                     del web_text
@@ -37,8 +37,10 @@ def check_web(user_text_id):
 def check_database(user_text_id):
     sources_id = []
     similar_parts = []
+
     user_text = Text.objects.get(id=user_text_id)
-    user_shingled_content = shingle_generation(canonize(user_text.content), 0)
+    shingle_dict = text_splitting(user_text.content)
+    user_shingled_content = shingle_generation(canonize(user_text.content))
     user_text.shingled_content = json.dumps(user_shingled_content)
 
     for data_base_text in Text.objects.exclude(id=user_text_id).exclude(uniqueness=0.0):
@@ -48,9 +50,8 @@ def check_database(user_text_id):
             sources_id.append(data_base_text.id)
             similar_part = duplicate_clear(similar_parts, similar_part)
             similar_parts += similar_part
-            # similar_parts.append(".")
 
-    # similar_parts.remove(".")
+    user_text.split_content(similar_areas_definition(shingle_dict, similar_parts))
     user_text.uniqueness = similarity_percentage_calculation(user_shingled_content, similar_parts)
     if user_text.uniqueness < 0:
         user_text.uniqueness = 0.0

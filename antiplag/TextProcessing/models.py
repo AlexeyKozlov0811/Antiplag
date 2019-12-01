@@ -7,9 +7,19 @@ class Text(models.Model):
     author = models.CharField(max_length=255, verbose_name="Автор", default="Unknown")
     source = models.CharField(max_length=255, verbose_name="Джерело", default="Author")
     content = models.TextField(verbose_name="Текст")
-    shingled_content = models.TextField(null=True ,verbose_name="шинглований канонічний текст")
+    shingled_content = models.TextField(null=True, verbose_name="шинглований канонічний текст")
     uniqueness = models.FloatField(default=-1, verbose_name="Унікальність")
     upload_date = models.DateField(default=timezone.now, verbose_name="Дата завантаження")
 
     def __str__(self):
         return 'Джерело - {0}'.format(self.author)
+
+    def split_content(self, burrowed_content):
+        for content in burrowed_content:
+            self.content = self.content.replace(content,
+                                                "<a class=\"burrowed_content\" title=\"aaaaaaaa\">" + content + "</a>")
+
+    def without_tags(self):
+        without_tags = self.content.replace("<a class=\"burrowed_content\" title=\"aaaaaaaa\">", "")
+        without_tags = without_tags.replace("</a>", "")
+        return without_tags
