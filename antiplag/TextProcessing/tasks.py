@@ -51,11 +51,14 @@ def check_database(user_text_id):
             similar_part = duplicate_clear(similar_parts, similar_part)
             similar_parts += similar_part
 
+    try:
+        user_text.sources = json.dumps(sources_id)
+    except TypeError:
+        user_text.sources = -1
     user_text.split_content(similar_areas_definition(shingle_dict, similar_parts))
     user_text.uniqueness = similarity_percentage_calculation(user_shingled_content, similar_parts)
     if user_text.uniqueness < 0:
         user_text.uniqueness = 0.0
-    print(sources_id)
     user_text.save()
     return 0
 

@@ -14,6 +14,12 @@
                 {% else %}
                     <p>Унікальність = {{i.uniqueness}}</p>
                 {% endif %}
+                {% if i.get_sources != -1.0 %}
+                    <p>Джерела:</p>
+                    {% for source in i.get_sources %}
+                        <a href="http://{{ request.get_host }}/text/{{source}}/">{{ request.get_host }}/text/{{source}}/</a> <br>
+                    {% endfor %}
+                {% endif %}
             </div>
             <p>Зміст: {{i.content|safe}}</p>
         </form>
