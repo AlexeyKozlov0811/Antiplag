@@ -2,7 +2,7 @@
 
 {% block content %}
     <h3>Введіть текст</h3>
-    <form class="text_add_form" method="POST" action="process_text/">
+    <form class="text_add_form" method="POST" action="add_text/">
         {% csrf_token %}
         <textarea class="text_add_area" name="Content" required cols="50" rows="30"></textarea>
         <button class="text_add_button" type="submit">Перевірити</button>

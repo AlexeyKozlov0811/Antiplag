@@ -3,22 +3,20 @@ Definition of views.
 """
 from .models import Text
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect
 from .tasks import check_uniqueness
 
 
 def home(request):
-    """Renders the about page."""
+    """Renders the home page."""
     assert isinstance(request, HttpRequest)
-    all_text = Text.objects.all()
     return render(request,
-                  'app/text_add.html',
-                  {'all_sources': all_text, }
+                  'app/home_page.html',
                   )
 
 
 def texts(request):
-    """Renders the about page."""
+    """Renders the text list page."""
     assert isinstance(request, HttpRequest)
     all_text = Text.objects.all()
     return render(request,
@@ -37,17 +35,8 @@ def account_render(request):
                   )
 
 
-def create_text(request):
-    assert isinstance(request, HttpRequest)
-    text = Text()
-    if request.user.is_authenticated:
-        text.author = request.user.username
-    text.content = request.POST.get("Content")
-    text.save()
-    return text
-
-
 def text_details(request, pk):
+    """Renders the text details page."""
     assert isinstance(request, HttpRequest)
     text = Text.objects.filter(id=pk)
     return render(request,
@@ -56,8 +45,13 @@ def text_details(request, pk):
                   )
 
 
-def process_text(request):
-    text = create_text(request)
+def add_text(request):
+    """Adds text to the database."""
+    text = Text()
+    if request.user.is_authenticated:
+        text.author = request.user.username
+    text.content = request.POST.get("Content")
+    text.save()
     check_uniqueness.delay(text.id)
     return HttpResponseRedirect("/")
 
