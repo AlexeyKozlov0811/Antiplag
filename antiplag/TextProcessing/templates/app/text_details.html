@@ -1,14 +1,12 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<div id="more-text-here1"></div>
-
     {% for i in text %}
-        <div>
+        <div class="wrapper">
             {% if i.author == "Unknown" %}
                 <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
             {% elif i.author != user.username %}
-                p class="text_source">Автор: {{ i.author }}</p>
+                <p> class="text_source">Автор: {{ i.author }}</p>
             {% endif %}
             <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
             {% if i.uniqueness == -1.0 %}
@@ -17,14 +15,22 @@
                 <p>Унікальність = {{i.uniqueness}}</p>
             {% endif %}
             {% if i.get_sources != -1.0 %}
-                <p>Джерела:</p>
+                <div class="sources">Джерела:</div>
                 {% for source in i.get_sources %}
     <!--            <a href="http://{{ request.get_host }}/text/{{source}}/">{{ request.get_host }}/text/{{source}}/</a>-->
-                    <button id="get_source" class="get_source">{{ request.get_host }}/text/{{source}}/</button><br>
+                    <button class="get_source first_text_button" value="{{source}}">Порівняти з текстом № {{source}}</button>
+                    <a class="second_text_button" href="http://{{ request.get_host }}/text/{{source}}/">Переглянути текст №{{source}} детальніше</a>
+
                 {% endfor %}
             {% endif %}
+
+            <div class="first_text">
+                <p class="detailed_text_area">{{i.content|safe}}</p>
             </div>
-            <p>Зміст: {{i.content|safe}}</p>
+            <div class="second_text">
+                <p id="second_text_area" class="detailed_text_area"></p>
+            </div>
+        </div>
     {% endfor %}
 {% endblock %}
 

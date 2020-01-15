@@ -1,3 +1,53 @@
+.wrapper{
+    width: 100%
+}
+
+.get_source{
+    display: inline-block;
+}
+
+.second_text_details{
+    float: right;
+}
+
+.first_text{
+    float: left;
+    width: 100%
+}
+
+.second_text{
+    float: right;
+    width: 48%;
+    display: none;
+}
+
+.first_text_button{
+    display: inline-block;
+    float: left;
+    width: 48%;
+    margin-bottom: 10px;
+}
+
+.second_text_button{
+    display: inline-block;
+    float: right;
+    width: 48%;
+    margin-bottom: 10px;
+    background-color: #ffd429;
+    padding: 22px 0;
+    color: #000;
+    font-family: 'Montserrat', sans-serif;
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.5s ease;
+    border: 0px solid #ffd429;
+}
+
+.detailed_text_area{
+    overflow: auto;
+    height: 65vh;
+}
+
 .text_list{
     display: flex;
     justify-content: space-between;
