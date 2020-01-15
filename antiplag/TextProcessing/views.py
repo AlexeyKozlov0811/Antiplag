@@ -2,8 +2,10 @@
 Definition of views.
 """
 from .models import Text
+from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse, HttpResponse, Http404
+import json
 from .tasks import check_uniqueness
 
 
@@ -55,3 +57,19 @@ def add_text(request):
     check_uniqueness.delay(text.id)
     return HttpResponseRedirect("/")
 
+
+def validate_username(request):
+    username = request.GET.get('username', None)
+    data = {
+        'is_taken': User.objects.filter(username__iexact=username).exists()
+    }
+    return JsonResponse(data)
+
+
+def text_source(request, pk):
+    if request.is_ajax():
+        text = Text.objects.get(id=pk)
+        response = {'first-text': text.content}
+        return JsonResponse(response)
+    else:
+        raise Http404

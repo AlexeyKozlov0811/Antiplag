@@ -135,6 +135,8 @@ SITE_ID = 1
 
 SITE_NAME = "Antiplag"
 
+SITE_URL = "www.Antiplag.com"
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 

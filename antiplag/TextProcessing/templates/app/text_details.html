@@ -1,27 +1,30 @@
 {% extends "app/base.html" %}
+
 {% block content %}
+<div id="more-text-here1"></div>
+
     {% for i in text %}
-        <form class="text_details_form" method="POST" action="process_text/">
-            <div>
-                {% if i.author == "Unknown" %}
-                    <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
-                {% elif i.author != user.username %}
-                    <p class="text_source">Автор: {{ i.author }}</p>
-                {% endif %}
-                <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
-                {% if i.uniqueness == -1.0 %}
-                    <p>Унікальність = не перевірено</p>
-                {% else %}
-                    <p>Унікальність = {{i.uniqueness}}</p>
-                {% endif %}
-                {% if i.get_sources != -1.0 %}
-                    <p>Джерела:</p>
-                    {% for source in i.get_sources %}
-                        <a href="http://{{ request.get_host }}/text/{{source}}/">{{ request.get_host }}/text/{{source}}/</a> <br>
-                    {% endfor %}
-                {% endif %}
+        <div>
+            {% if i.author == "Unknown" %}
+                <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
+            {% elif i.author != user.username %}
+                p class="text_source">Автор: {{ i.author }}</p>
+            {% endif %}
+            <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
+            {% if i.uniqueness == -1.0 %}
+                <p>Унікальність = не перевірено</p>
+            {% else %}
+                <p>Унікальність = {{i.uniqueness}}</p>
+            {% endif %}
+            {% if i.get_sources != -1.0 %}
+                <p>Джерела:</p>
+                {% for source in i.get_sources %}
+    <!--            <a href="http://{{ request.get_host }}/text/{{source}}/">{{ request.get_host }}/text/{{source}}/</a>-->
+                    <button id="get_source" class="get_source">{{ request.get_host }}/text/{{source}}/</button><br>
+                {% endfor %}
+            {% endif %}
             </div>
             <p>Зміст: {{i.content|safe}}</p>
-        </form>
     {% endfor %}
 {% endblock %}
+
