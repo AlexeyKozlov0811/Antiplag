@@ -17,15 +17,13 @@
             {% if i.get_sources != -1.0 %}
                 <div class="sources">Джерела:</div>
                 {% for source in i.get_sources %}
-    <!--            <a href="http://{{ request.get_host }}/text/{{source}}/">{{ request.get_host }}/text/{{source}}/</a>-->
                     <button class="get_source first_text_button" value="{{source}}">Порівняти з текстом № {{source}}</button>
                     <a class="second_text_button" href="http://{{ request.get_host }}/text/{{source}}/">Переглянути текст №{{source}} детальніше</a>
-
                 {% endfor %}
             {% endif %}
 
             <div class="first_text">
-                <p class="detailed_text_area">{{i.content|safe}}</p>
+                <p class="detailed_text_area">{{i.content}}</p>
             </div>
             <div class="second_text">
                 <p id="second_text_area" class="detailed_text_area"></p>
@@ -33,4 +31,27 @@
         </div>
     {% endfor %}
 {% endblock %}
+
+{% block scripts %}
+<script>
+
+        let patterns = [
+            {text: " 1!_!_!1 ", classes: ['orange'], new_text: `<span class="orange">`},
+            {text: " 2!_!_!2 ", classes: ['orange'], new_text: `</span>`},
+        ];
+
+        const marker = ( text, patterns ) => {
+            return patterns.reduce( ( result, current ) => {
+                let regexp = new RegExp(current.text, 'g');
+                let style = current.classes.join(' ');
+                return result.replace( regexp, `${ current.new_text }` );
+            }, text );
+        }
+
+        let text = document.body.innerHTML;
+        document.body.innerHTML = marker( text, patterns );
+
+</script>
+{% endblock %}
+
 

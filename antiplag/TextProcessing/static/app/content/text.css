@@ -80,6 +80,16 @@
     color: red;
 }
 
+.orange {
+  background: orange;
+}
+.tomato {
+  background: tomato;
+}
+.pink {
+  background: pink;
+}
+
 @media (max-width: 600px) {
 	.text_area{
         height: 84px;

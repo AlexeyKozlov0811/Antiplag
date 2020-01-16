@@ -8,6 +8,7 @@
 
 .second_text_details{
     float: right;
+    float: right;
 }
 
 .first_text{
@@ -77,6 +78,16 @@
 
 .burrowed_content{
     color: red;
+}
+
+.orange {
+  background: orange;
+}
+.tomato {
+  background: tomato;
+}
+.pink {
+  background: pink;
 }
 
 @media (max-width: 600px) {

@@ -69,7 +69,19 @@ def validate_username(request):
 def text_source(request, pk):
     if request.is_ajax():
         text = Text.objects.get(id=pk)
-        response = {'text': text.content}
+        response = {'text': text.hide_separators()}
+        return JsonResponse(response)
+    else:
+        raise Http404
+
+
+def highlight_text(request, pk):
+    if request.is_ajax():
+        text = Text.objects.get(id=pk)
+        if not text.uniqueness == -1:
+            response = {'text': json.loads(text.burrowed_content)}
+        else:
+            response = {'text': ""}
         return JsonResponse(response)
     else:
         raise Http404

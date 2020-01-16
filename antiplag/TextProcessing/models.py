@@ -11,6 +11,7 @@ class Text(models.Model):
     source = models.CharField(max_length=255, verbose_name="Джерело", default="Author")
     sources = models.TextField(default=-1, verbose_name="Джерела")
     content = models.TextField(verbose_name="Текст")
+    burrowed_content = models.TextField(default=json.dumps([""]), verbose_name="Запозичений текст")
     shingled_content = models.TextField(null=True, verbose_name="Шинглований канонічний текст")
     uniqueness = models.FloatField(default=-1, verbose_name="Унікальність")
     upload_date = models.DateField(default=timezone.now, verbose_name="Дата завантаження")
@@ -18,18 +19,21 @@ class Text(models.Model):
     def __str__(self):
         return 'Автор - {0}'.format(self.author) + ' Дата - {0}'.format(self.upload_date)
 
-    def split_content(self, burrowed_content):
+    def separate_burrowed_content(self, burrowed_content):
         for content in burrowed_content:
             self.content = self.content.replace(content,
-                                                "<a class=\"burrowed_content\" title=\"aaaaaaaa\">" + content + "</a>")
+                                                " 1!_!_!1 " + content + " 2!_!_!2 ")
 
-    def without_tags(self):
-        without_tags = self.content.replace("<a class=\"burrowed_content\" title=\"aaaaaaaa\">", "")
-        without_tags = without_tags.replace("</a>", "")
-        return without_tags
+    def hide_separators(self):
+        without_separators = self.content.replace(" 1!_!_!1 ", "")
+        without_separators = without_separators.replace(" 2!_!_!2 ", "")
+        return without_separators
 
     def get_sources(self):
         return json.loads(self.sources)
+
+    def get_burrowed_content(self):
+        return json.loads(self.burrowed_content)
 
     def find_similar_in_web(self):
         SetOfUrls = find_text_urls(self.content)
@@ -65,7 +69,7 @@ class Text(models.Model):
             self.sources = json.dumps(sources_id)
         except TypeError:
             self.sources = -1
-        self.split_content(similar_areas_definition(shingle_dict, similar_parts))
+        self.separate_burrowed_content(similar_areas_definition(shingle_dict, similar_parts))
         self.uniqueness = similarity_percentage_calculation(user_shingled_content, similar_parts)
         if self.uniqueness < 0:
             self.uniqueness = 0.0
