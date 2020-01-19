@@ -31,7 +31,7 @@ def shingle_generation(source):
 
 
 # Splits the text and returns dictionary of hashes and phrases
-def text_splitting(text):
+def create_shingle_dictionary(text):
     hashes = shingle_generation(canonize(text))
     separated_text = text.split()
     separated_list = []
@@ -196,7 +196,7 @@ if __name__ == "__main__":
     #         u'на межі Полісся і лісостепу по обидва береги Дніпра в його середній течії. Площа міста 836 км. Довжина ' \
     #         u'вздовж берега — понад 20 км. '
 
-    shingle_dict = text_splitting(text1)
+    shingle_dict = create_shingle_dictionary(text1)
 
     # print(shingle_dict)
 

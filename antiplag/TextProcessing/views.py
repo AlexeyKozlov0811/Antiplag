@@ -81,7 +81,7 @@ def highlight_text(request, pk):
         if not text.uniqueness == -1:
             response = {'text': json.loads(text.burrowed_content)}
         else:
-            response = {'text': ""}
+            response = {'text': "1"}
         return JsonResponse(response)
     else:
         raise Http404

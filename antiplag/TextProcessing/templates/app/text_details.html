@@ -40,16 +40,26 @@
             {text: " 2!_!_!2 ", classes: ['orange'], new_text: `</span>`},
         ];
 
-        const marker = ( text, patterns ) => {
-            return patterns.reduce( ( result, current ) => {
-                let regexp = new RegExp(current.text, 'g');
-                let style = current.classes.join(' ');
-                return result.replace( regexp, `${ current.new_text }` );
-            }, text );
-        }
+        url = document.location.href.split('/');
+        id = url[url.length-2]
+        $.ajax({
+            type: 'GET',
+            async: true,
+            url: '/highlight_text/' + id + '/',
+            data: "",
+            success: function(data) {
+                if (data['text'][0] !== undefined){
+                    patterns.unshift({text: data['text'][0], classes: ['orange'], new_text: ``})
+                    console.log(patterns);
+                    let text = document.body.innerHTML;
 
-        let text = document.body.innerHTML;
-        document.body.innerHTML = marker( text, patterns );
+                }
+            },
+            dataType: 'json',
+        });
+
+
+
 
 </script>
 {% endblock %}
