@@ -1,14 +1,16 @@
-# -*- coding: utf-8 -*-
+"""
+Module contains business-logic responsible for comparison of texts
+"""
 
 import binascii
+from typing import Union, List, Dict
 from pymorphy2 import MorphAnalyzer
-
 from .StopSymbols import stop_words, stop_symbols
 
 morph = MorphAnalyzer(lang='uk')
 
 
-def canonize(source):
+def Canonize(source: str) -> List[str]:
     text_cleaning = [x for x in [y.strip(stop_symbols) for y in source.lower().split()] if x and (x not in stop_words)]
     cleaned_text = []
     # print(text_cleaning)
@@ -19,7 +21,7 @@ def canonize(source):
 
 
 # generates shingles
-def shingle_generation(source):
+def ShingleGeneration(source: List[str]) -> List[int]:
     shingle_len = 4  # длина шингла
     out = []
     words = []
@@ -31,8 +33,8 @@ def shingle_generation(source):
 
 
 # Splits the text and returns dictionary of hashes and phrases
-def create_shingle_dictionary(text):
-    hashes = shingle_generation(canonize(text))
+def CreateShingleDictionary(text: str) -> Dict[int, str]:
+    hashes = ShingleGeneration(Canonize(text))
     separated_text = text.split()
     separated_list = []
     separated_str = ""
@@ -60,7 +62,7 @@ def create_shingle_dictionary(text):
 
 
 # compares texts and returns list of similar hashed shingles
-def comparation(source1, source2):
+def GetSimilarAreas(source1: List[int], source2: List[int]) -> List[int]:
     # same = 0
     similar_phrases = []
     for i in range(len(source1)):
@@ -82,7 +84,7 @@ def comparation(source1, source2):
 
 
 # returns common parts of the texts
-def similar_areas_definition(text1_dictionary, compared_texts):
+def GetSimilarAreasDefinition(text1_dictionary: Dict[int, str], compared_texts: List[Union[int, str]]) -> List[str]:
     areas = []
     new = []
     defined_area = ""
@@ -115,7 +117,7 @@ def similar_areas_definition(text1_dictionary, compared_texts):
     return list_of_areas
 
 
-def duplicate_clear(old_similar_phrases, new_similar_phrases):
+def RemoveDuplicates(old_similar_phrases: List[int], new_similar_phrases: List[int]) -> List[int]:
     duplicates_indexes = []
     for word_in_old in old_similar_phrases:
         for word_in_new in new_similar_phrases:
@@ -129,14 +131,14 @@ def duplicate_clear(old_similar_phrases, new_similar_phrases):
 
 
 # counts the percentage of two texts, will be changed later
-def similarity_percentage_calculation(source, same):
+def SimilarityPercentageCalculation(source: List[int], same: List[int]) -> float:
     try:
         return float(format(100 - len(same) / float(len(source)) * 100, '.2f'))
     except ZeroDivisionError:
         return 0.0
 
 
-def split_text(text, burrowed_content):
+def SplitText(text, burrowed_content):
     diapasons = str(len(burrowed_content))
     for burrowed_str in burrowed_content:
         first = text.find(burrowed_str)
@@ -196,16 +198,16 @@ if __name__ == "__main__":
     #         u'на межі Полісся і лісостепу по обидва береги Дніпра в його середній течії. Площа міста 836 км. Довжина ' \
     #         u'вздовж берега — понад 20 км. '
 
-    shingle_dict = create_shingle_dictionary(text1)
+    shingle_dict = CreateShingleDictionary(text1)
 
     # print(shingle_dict)
 
-    shingled_canonized_text1 = shingle_generation(canonize(text1))
-    shingled_canonized_text2 = shingle_generation(canonize(text2))
-    shingled_canonized_text3 = shingle_generation(canonize(text3))
+    shingled_canonized_text1 = ShingleGeneration(Canonize(text1))
+    shingled_canonized_text2 = ShingleGeneration(Canonize(text2))
+    shingled_canonized_text3 = ShingleGeneration(Canonize(text3))
 
-    similar_1 = comparation(shingled_canonized_text1, shingled_canonized_text2)
-    similar_2 = comparation(shingled_canonized_text1, shingled_canonized_text3)
+    similar_1 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text2)
+    similar_2 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text3)
 
     # print(similar_1)
     #
@@ -213,7 +215,7 @@ if __name__ == "__main__":
     #
     # print(similar_1 + similar_2)
 
-    similar_2 = duplicate_clear(similar_1, similar_2)
+    similar_2 = RemoveDuplicates(similar_1, similar_2)
 
     similar_1 += similar_2
 
@@ -221,8 +223,8 @@ if __name__ == "__main__":
     #
     # print(list(set(similar_1 + similar_2)))
 
-    similar_areas = similar_areas_definition(shingle_dict, similar_1)
+    similar_areas = GetSimilarAreasDefinition(shingle_dict, similar_1)
 
-    print(split_text(text1, similar_areas))
+    print(SplitText(text1, similar_areas))
 
     print(text1)

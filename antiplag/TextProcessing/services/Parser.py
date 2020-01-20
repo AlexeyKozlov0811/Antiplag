@@ -1,12 +1,16 @@
+"""
+Module contains business-logic responsible for finding fragments of text in web
+"""
 import math
 import requests
+from typing import Union, List
 from bs4 import BeautifulSoup
 
 pages = 1
 
 
-# function returns webpage html code or 0 in case of failure
-def get_HTML(url):
+# function returns web page html code or 0 in case of failure
+def GetHTML(url: str) -> Union[int, requests.Response]:
     try:
         HTMLCode = requests.get(url)
     except requests.exceptions.RequestException:
@@ -16,19 +20,19 @@ def get_HTML(url):
 
 
 # function parsing search result
-def search_parsing(search_query):
+def GetSearchQueryResult(search_query: str) -> List[str]:
     QueryResultUrls = []
     SearchUrl = 'http://www.google.com/search?q=' + search_query + '&start='
     for NumOfPage in range(pages):
-        SearchResult = get_HTML(SearchUrl + str(NumOfPage * 10))
+        SearchResult = GetHTML(SearchUrl + str(NumOfPage * 10))
         if SearchResult:
-            QueryResultUrls = clean_link(SearchResult)
+            QueryResultUrls = GetCleanLink(SearchResult)
     return QueryResultUrls
 
 
 # function cleans correct link
-def clean_link(search_result):
-    ClearedLink = []
+def GetCleanLink(search_result: Union[int, requests.Response]) -> List[str]:
+    ClearedLinks = []
     soup = BeautifulSoup(search_result.text, "html.parser")
     AllLinks = soup.find_all('div', class_="BNeawe UPmit AP7Wnd")
     for Link in AllLinks:
@@ -36,14 +40,14 @@ def clean_link(search_result):
                         (Link.string.rfind('mail.ru') == -1) and (Link.string.rfind('.jpg') == -1) and (
                                 Link.string.rfind('.png') == -1) and (Link.string.rfind('.gif')) == -1
         if LinkIsCorrect:
-            ClearedLink.append(Link.string.replace(" › ", "/"))
-    return ClearedLink
+            ClearedLinks.append(Link.string.replace(" › ", "/"))
+    return ClearedLinks
 
 
-# function extracts webpage textual content
-def get_content(url):
+# function extracts web page textual content
+def GetWebContent(url: str) -> str:
     CleanText = ""
-    WebResource = get_HTML(url)
+    WebResource = GetHTML(url)
     if WebResource:
         HTMLCode = BeautifulSoup(WebResource.text, "html.parser")
         for Script in HTMLCode(["script", "style"]):
@@ -52,18 +56,18 @@ def get_content(url):
         for Phrase in Text:
             PhraseIsMeaningful = (Phrase != '') and (
                     (Phrase[-1] == '.') or (Phrase[-1] == '?') or (Phrase[-1] == '!') or (Phrase[-1] == ':') or (
-                    Phrase[-1] == ';'))
+                     Phrase[-1] == ';'))
             if PhraseIsMeaningful:
                 CleanText += str(Phrase)
                 CleanText += "\n"
         del Text
         return CleanText
     else:
-        return 0
+        return "0"
 
 
 # function divides text into 32-word phrases
-def text_separation(text):
+def TextSeparation(text: str) -> List[str]:
     SeparatedPhrases = []
     ListOfWords = text.split()
     NumOfWords = len(ListOfWords)
@@ -75,14 +79,14 @@ def text_separation(text):
 
 
 # function finds text references in web
-def find_text_urls(text):
+def FindTextUrls(text: str) -> List[str]:
     Urls = []
-    AllParts = text_separation(text)
+    AllParts = TextSeparation(text)
     for Query in AllParts:
         try:
-            Urls.append(search_parsing(Query)[0])
+            Urls.append(GetSearchQueryResult(Query)[0])
         except IndexError:
-            return 0
+            return ["0"]
         else:
             return list(set(Urls))
 
@@ -137,4 +141,4 @@ if __name__ == "__main__":
             "команди import this (лише один раз за сесію). Автором цієї філософії вважається Тім Пейтерс. "
     # print(get_content(search_parsing(text_separation(query)[0])[0]))
     # print(search_parsing(text_separation(query)[0]))
-    print(find_text_urls(query))
+    print(FindTextUrls(query))

@@ -1,12 +1,12 @@
 """
-Definition of views.
+Module contains controller logic
 """
-from .models import Text
+
 from django.contrib.auth.models import User
 from django.shortcuts import render
-from django.http import HttpRequest, HttpResponseRedirect, JsonResponse, HttpResponse, Http404
-import json
+from django.http import HttpRequest, HttpResponseRedirect, JsonResponse, Http404
 from .tasks import check_uniqueness
+from .services.TextService import *
 
 
 def home(request):
@@ -48,17 +48,17 @@ def text_details(request, pk):
 
 
 def add_text(request):
-    """Adds text to the database."""
-    text = Text()
+    author = "Unknown"
+    content = request.POST.get("Content")
     if request.user.is_authenticated:
-        text.author = request.user.username
-    text.content = request.POST.get("Content")
-    text.save()
-    check_uniqueness.delay(text.id)
+        author = request.user.username
+    text_id = CreateText(content, author)
+    check_uniqueness.delay(text_id)
     return HttpResponseRedirect("/")
 
 
 def validate_username(request):
+    """Answers ajax request check free username."""
     username = request.GET.get('username', None)
     data = {
         'is_taken': User.objects.filter(username__iexact=username).exists()
@@ -67,19 +67,21 @@ def validate_username(request):
 
 
 def text_source(request, pk):
+    """Answers ajax request to get text content."""
     if request.is_ajax():
-        text = Text.objects.get(id=pk)
-        response = {'text': text.hide_separators()}
+        text_content = GetTextContent(pk)
+        response = {'text': text_content}
         return JsonResponse(response)
     else:
         raise Http404
 
 
 def highlight_text(request, pk):
+    """Answers ajax request to highlight text parts."""
     if request.is_ajax():
-        text = Text.objects.get(id=pk)
-        if not text.uniqueness == -1:
-            response = {'text': json.loads(text.burrowed_content)}
+        text_burrowed_content = GetTextBurrowedContent(pk)
+        if text_burrowed_content:
+            response = {'text': json.loads(text_burrowed_content)}
         else:
             response = {'text': "1"}
         return JsonResponse(response)
