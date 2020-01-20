@@ -17,6 +17,14 @@ def home(request):
                   )
 
 
+def selection(request):
+    """Renders the text selection page."""
+    assert isinstance(request, HttpRequest)
+    return render(request,
+                  'app/selection_page.html',
+                  )
+
+
 def texts(request):
     """Renders the text list page."""
     assert isinstance(request, HttpRequest)
@@ -88,3 +96,7 @@ def highlight_text(request, pk):
         return JsonResponse(response)
     else:
         raise Http404
+
+
+def select_texts():
+    return None

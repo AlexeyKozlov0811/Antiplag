@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/text_add.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/login.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'app/content/text.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'app/content/selection.css' %}" />
     <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}">
     <script src="{% static 'app/scripts/modernizr-2.6.2.js' %}"></script>
 </head>
@@ -27,6 +28,7 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Домашня сторінка</a></li>
+                    <li><a href="{% url 'selection' %}">Вибірка текстів</a></li>
                     <li><a href="{% url 'texts' %}">Каталог текстів</a></li>
                 </ul>
                 <hr class="login_hr"/>
@@ -38,10 +40,10 @@
     <div class="container body-content">
         {% block content %}
         {% endblock %}
+        <hr/>
     </div>
 
     <footer>
-        <hr/>
         <p>&copy; {{ year }}Antiplag</p>
     </footer>
 

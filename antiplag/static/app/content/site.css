@@ -9,7 +9,6 @@ footer p{
 
 /* Set padding to keep content from hitting the edges */
 .body-content {
-    padding-top: 15px;
     padding-left: 15px;
     padding-right: 15px;
 }
@@ -43,4 +42,8 @@ input[type="checkbox"].input-validation-error {
 
 .validation-summary-valid {
     display: none;
+}
+
+.page_header{
+    padding-top: 15px;
 }
