@@ -66,11 +66,12 @@ def validate_username(request):
     return JsonResponse(data)
 
 
-def text_source(request, pk):
+def text_source(request, first_text_id, second_text_id):
     """Answers ajax request to get text content."""
     if request.is_ajax():
-        text_content = GetTextContent(pk)
-        response = {'text': text_content}
+        text_content = GetTextContent(second_text_id)
+        text_burrowed_content = GetTextBurrowedContent(first_text_id, second_text_id)
+        response = {'text': text_content.rstrip('\n'), 'burrowed_content': text_burrowed_content}
         return JsonResponse(response)
     else:
         raise Http404
@@ -81,9 +82,9 @@ def highlight_text(request, pk):
     if request.is_ajax():
         text_burrowed_content = GetTextBurrowedContent(pk)
         if text_burrowed_content:
-            response = {'text': json.loads(text_burrowed_content)}
+            response = {'text': text_burrowed_content}
         else:
-            response = {'text': "1"}
+            response = None
         return JsonResponse(response)
     else:
         raise Http404

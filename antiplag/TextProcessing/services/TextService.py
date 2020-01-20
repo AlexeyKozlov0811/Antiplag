@@ -29,7 +29,7 @@ def GetTextContent(text_id: int) -> str:
 def GetTextBurrowedContent(main_text_id: int, second_text_id: int = -1) -> str:
     main_text = Text.objects.get(id=main_text_id)
     text_burrowed_content = json.loads(main_text.burrowed_content)
-    if second_text_id != -1:
+    if second_text_id == -1:
         return text_burrowed_content.get(str(main_text_id))
     else:
         return text_burrowed_content.get(str(second_text_id))
@@ -82,11 +82,12 @@ def FindSimilarAreas(text_id: int, user_text_shingles: List[int]) -> Tuple[List[
         if similar_part:
             sources.append(data_base_text.id)
 
-            similar_part = RemoveDuplicates(similar_parts, similar_part)
-
             str_similar_part = [str(item) for item in similar_part]
 
+            similar_part = RemoveDuplicates(similar_parts, similar_part)
+
             data_base_text_shingle_dict = json.loads(data_base_text.shingle_dict)
+
             data_base_similar_content = GetSimilarAreasDefinition(data_base_text_shingle_dict, str_similar_part)
             database_text_similar_content[data_base_text.id] = data_base_similar_content
             similar_parts += similar_part
@@ -112,7 +113,7 @@ def CompareWithDatabaseTexts(text_id: int) -> None:
     try:
         text.sources = json.dumps(sources)
     except TypeError:
-        text.sources = json.dumps([-1])
+        text.sources = -1
 
     text.uniqueness = SimilarityPercentageCalculation(user_text_shingles, similar_parts)
     if text.uniqueness < 0:
