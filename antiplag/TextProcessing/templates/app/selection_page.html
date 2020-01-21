@@ -2,18 +2,33 @@
 
 {% block content %}
     <div class="selection_block">
-        <form class="filters" action="select_texts/">
+        <form class="filter_form" method="GET" action="select_texts/">
             {% csrf_token %}
-            <label >Lorem<input name="author_texts" type="text"></label>
-            <label >Lorem<input name="source_filters" type="text"></label>
-            <label >Lorem<input name="uniqueness_filter" type="number" min="0.0" max="100.0"></label>
-            <label >Lorem<input name="first_date" type="date"></label>
-            <label >Lorem<input name="second_date" type="date"></label>
 
+            <fieldset class="name_filter filters">
+                <legend>Фільтр по джерелу текста (Оберіть один з фільтрів)</legend>
+                <label class="name_filter_label">Фільтр по автору<input class="name_filter_input_field input_field" name="author_texts" type="text"></label>
+                <label class="name_filter_label">Фільтр по ключовим словам джерела<input class="name_filter_input_field input_field" name="source_filters" type="text"></label>
+            </fieldset>
 
+            <fieldset class="uniqueness_filter filters">
+                <legend>Фільтр по відсотку унікальності</legend>
+                <div class="filter_labels">
+                    <label>Поріг успішного проходження <input class="input_field" name="uniqueness_success_border" type="number" min="0.0" max="100.0"></label>
+                    <label>Верхня границя <input class="input_field" name="uniqueness_upper_border" type="number" min="0.0" max="100.0" value="100.0"></label>
+                    <label>Нижня границя <input class="input_field" name="uniqueness_down_border" type="number" min="0.0" max="100.0" value="0.0"></label>
+                </div>
+            </fieldset>
 
+            <fieldset class="upload_date_filter filters">
+                <legend>Фільтр по даті завантаження</legend>
+                <div class="filter_labels">
+                    <label class="date_filter_label"> ВІД <input class="input_field" name="left_date" type="date"></label>
+                    <label class="date_filter_label"> ДО <input class="input_field" name="right_date" type="date"></label>
+                </div>
+            </fieldset>
 
-            <button class="" type="submit">Зробити вибірку</button>
+            <button class="select_texts" type="submit">Зробити вибірку</button>
         </form>
     </div>
 {% endblock %}
