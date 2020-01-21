@@ -4,10 +4,39 @@ Module contains business-logic responsible for operating and extraction data fro
 
 import json
 from typing import List, Dict, Tuple
-
 from .Parser import *
 from .Shingling import *
 from ..models import Text
+from django.db.models import Q
+from typing import NamedTuple
+
+class SelectionRequest(NamedTuple):
+    author_filter: str
+    key_words_filter: List[str]
+    uniqueness_upper_border: float
+    uniqueness_down_border: float
+    left_date: str
+    right_date: str
+
+    def GetSelectionSet(self):
+        selection_set = Text.objects.filter(uniqueness__range=(self.uniqueness_down_border, self.uniqueness_upper_border))
+
+        if self.author_filter != "":
+            selection_set = selection_set.filter(author=self.author_filter)
+        elif self.key_words_filter:
+            for key_word in self.key_words_filter:
+                selection_set = selection_set.filter(source__icontains=key_word)
+
+        if self.left_date == "" and self.right_date != "":
+            selection_set = selection_set.filter(upload_date__lte=self.right_date)
+        elif self.left_date != "" and self.right_date == "":
+            selection_set = selection_set.filter(upload_date__gte=self.left_date)
+        elif self.left_date != "" and self.right_date != "":
+            if self.left_date < self.right_date:
+                selection_set = selection_set.filter(upload_date__range=(self.left_date, self.right_date))
+            else:
+                selection_set = selection_set.filter(upload_date__range=(self.right_date, self.left_date))
+        return selection_set
 
 
 # function creates text in database and returns its id in database

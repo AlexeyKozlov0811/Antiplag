@@ -6,12 +6,8 @@
     padding: 15px;
 }
 
-.filter_form{
-
-}
-
 .filters{
-    border: 1px solid #ffd429;
+    border: 1px solid gray;
     padding: 5px;
 }
 
@@ -32,22 +28,8 @@
 }
 
 .date_filter_label{
+    width: 100%;
     text-align: center;
-}
-
-
-
-.upload_date_filter{
-
-}
-
-.date_input_field{
-
-
-}
-
-.date_input{
-
 }
 
 .select_texts{
@@ -57,12 +39,12 @@
 }
 
 @media (max-width: 520px) {
-    .uniqueness_filter_labels{
+    .filter_labels{
         flex-direction: column;
     }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 690px) {
 	.input_field{
 		width: 100%;
 		text-align: center;

@@ -1,0 +1,41 @@
+{% extends "app/base.html" %}
+
+{% block content %}
+
+{% for text in SelectionSet %}
+
+    <form class="text_list" action="/text/{{text.id}}">
+        <div class="text_info">
+            {% if text.author == "Unknown" %}
+                <a class="content" href="{{ text.source }}">{{ text.source }} </a>
+            {% else %}
+                <p class="content">{{ text.author }} </p>
+            {% endif %}
+            <p class="content">{{ text.upload_date }} </p>
+
+            <p class="content">{{ text.uniqueness }} </p>
+            {% if text.uniqueness >= success_uniqueness_test_border %}
+            <p class="content">+ </p>
+            {% else %}
+            <p class="content">- </p>
+            {% endif %}
+            <a href="/text/{{text.id}}">Переглянути детально</a>
+        </div>
+    </form>
+
+
+{% endfor %}
+
+<button id = "b">сoхранить</button>
+
+{% endblock %}
+
+
+{% block scripts %}
+{% load staticfiles %}
+
+<script src="{% static 'app/scripts/download_selection_set.js' %}"></script>
+
+{% endblock %}
+
+

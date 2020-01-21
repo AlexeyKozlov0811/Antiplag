@@ -65,6 +65,22 @@ def add_text(request):
     return HttpResponseRedirect("/")
 
 
+def select_texts(request):
+    Selection = SelectionRequest(author_filter=request.POST.get("author_texts"),
+                                 key_words_filter=request.POST.get("source_filters").split(' '),
+                                 uniqueness_upper_border=float(request.POST.get("uniqueness_upper_border")),
+                                 uniqueness_down_border=float(request.POST.get("uniqueness_down_border")),
+                                 left_date=request.POST.get("left_date"),
+                                 right_date=request.POST.get("right_date")
+                                 )
+    success_uniqueness_test_border = float(request.POST.get("uniqueness_success_border"))
+    return render(request,
+                  'app/selection_set.html',
+                  {'SelectionSet': Selection.GetSelectionSet(),
+                   'success_uniqueness_test_border': success_uniqueness_test_border},
+                  )
+
+
 def validate_username(request):
     """Answers ajax request check free username."""
     username = request.GET.get('username', None)
@@ -96,7 +112,3 @@ def highlight_text(request, pk):
         return JsonResponse(response)
     else:
         raise Http404
-
-
-def select_texts():
-    return None
