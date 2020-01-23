@@ -16,9 +16,6 @@ $(document).ready(function () {
                     $("#second_text_area").text(data['text']);
                     if (data['burrowed_content'] !== undefined){
                         console.log(data['burrowed_content'][0]);
-
-                        //let text = data['burrowed_content'][0];
-                        //let text = "енциклопедії. Python (найчастіше вживане прочитання — «Па́йтон», запозичено назву[5] з британського шоу Монті Пайтон) — інтерпретована об'єктно-орієнтована мова програмування високого рівня зі строгою динамічною типізацією.[6] Розроблена в 1990 році Гвідо ван Россумом. ";
                         let text = document.getElementById("second_text_area").innerHTML
                         console.log(text)
                         console.log(text.indexOf(data['burrowed_content'][0]));

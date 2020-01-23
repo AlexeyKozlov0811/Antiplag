@@ -1,6 +1,6 @@
 .selection_block{
     width: 100%;
-    background-color: #e8e6e6;
+    background-color: #fdfdfd;
     border: 2px solid #ffd429;
     border-radius: 0px 0px 18px 18px;
     padding: 15px;
@@ -36,6 +36,23 @@
     float: right;
     margin-top: 15px;
     padding: 10px 0px;
+}
+
+.selection_content{
+    margin: 0px;
+}
+
+.sortable{
+    width: 100%;
+}
+
+th,td{
+    border: 1px solid gray;
+}
+
+#download{
+    margin-top: 20px;
+    float: right;
 }
 
 @media (max-width: 520px) {

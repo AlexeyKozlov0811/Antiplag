@@ -40,13 +40,15 @@
     <div class="container body-content">
         {% block content %}
         {% endblock %}
-        <hr/>
+
     </div>
 
-    <footer>
+    <footer class="container">
+        <hr/>
         <p>&copy; {{ year }}Antiplag</p>
     </footer>
 
+    <script src="{% static 'app/scripts/sorttable.js' %}"></script>
     <script src="{% static 'app/scripts/jquery-1.10.2.js' %}"></script>
     <script src="{% static 'app/scripts/bootstrap.js' %}"></script>
     <script src="{% static 'app/scripts/respond.js' %}"></script>

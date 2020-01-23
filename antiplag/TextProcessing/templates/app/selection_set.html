@@ -1,32 +1,61 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-
-{% for text in SelectionSet %}
-
-    <form class="text_list" action="/text/{{text.id}}">
-        <div class="text_info">
-            {% if text.author == "Unknown" %}
-                <a class="content" href="{{ text.source }}">{{ text.source }} </a>
-            {% else %}
-                <p class="content">{{ text.author }} </p>
-            {% endif %}
-            <p class="content">{{ text.upload_date }} </p>
-
-            <p class="content">{{ text.uniqueness }} </p>
-            {% if text.uniqueness >= success_uniqueness_test_border %}
-            <p class="content">+ </p>
-            {% else %}
-            <p class="content">- </p>
-            {% endif %}
-            <a href="/text/{{text.id}}">Переглянути детально</a>
-        </div>
-    </form>
+<br>
 
 
-{% endfor %}
+<p id="number_of_texts">Кількість текстів: {{set_length}}</p>
+<p id="number_of_passed">Кількість текстів, що пройшли перевірку: </p>
+<p id="average_uniqueness">Середня унікальність: </p>
 
-<button id = "b">сoхранить</button>
+<table class="sortable ">
+    <tr>
+        <th>№</th>
+        <th>Джерело/Автор</th>
+        <th>Дата завантаження</th>
+        <th>Відсоток унікальності</th>
+        <th>Ознака проходженя</th>
+    </tr>
+    {% for text in SelectionSet %}
+    <tr>
+
+        <td>
+            <a class="selection_content" href="/text/{{text.id}}">№{{ forloop.counter }} </a>
+        </td>
+
+        {% if text.author == "Unknown" %}
+            <td>
+                <a class="selection_content" href="{{ text.source }}">{{ text.source }} </a>
+            </td>
+        {% else %}
+            <td>
+                <p class="selection_content">{{ text.author }} </p>
+            </td>
+        {% endif %}
+
+        <td>
+        <p class="selection_content">{{ text.upload_date }} </p>
+        </td>
+
+        <td class="">
+        <p class="selection_content uniqueness_td">{{ text.uniqueness }} </p>
+        </td>
+
+        {% if text.uniqueness >= success_uniqueness_test_border %}
+            <td class="passed_td">
+                <p class="selection_content">+ </p>
+            </td>
+        {% else %}
+            <td class="">
+                <p class="selection_content">- </p>
+            </td>
+        {% endif %}
+
+    </tr>
+    {% endfor %}
+</table>
+
+<button id = "download">Завантажити вибірку</button>
 
 {% endblock %}
 
@@ -35,6 +64,23 @@
 {% load staticfiles %}
 
 <script src="{% static 'app/scripts/download_selection_set.js' %}"></script>
+
+<script>
+
+    $('#number_of_passed').text($('#number_of_passed').text() + `${$('.passed_td').length}`);
+
+
+    number_of_texts = {{set_length}};
+
+    uniqueness = $('.uniqueness_td').text().replace(/\,/g, '.').split(' ');
+    uniqueness.pop();
+    uniqueness = uniqueness.map(string => +string);
+    uniqueness = uniqueness.reduce((sum, current) => sum + current, 0);
+    uniqueness /= number_of_texts;
+
+    $('#average_uniqueness').text($('#average_uniqueness').text() + `${uniqueness.toFixed(2)}`);
+
+</script>
 
 {% endblock %}
 

@@ -73,11 +73,15 @@ def select_texts(request):
                                  left_date=request.POST.get("left_date"),
                                  right_date=request.POST.get("right_date")
                                  )
+
     success_uniqueness_test_border = float(request.POST.get("uniqueness_success_border"))
+    selection_set = Selection.GetSelectionSet()
+    set_length = len(selection_set)
     return render(request,
                   'app/selection_set.html',
-                  {'SelectionSet': Selection.GetSelectionSet(),
-                   'success_uniqueness_test_border': success_uniqueness_test_border},
+                  {'SelectionSet': selection_set,
+                   'success_uniqueness_test_border': success_uniqueness_test_border,
+                   'set_length': set_length},
                   )
 
 

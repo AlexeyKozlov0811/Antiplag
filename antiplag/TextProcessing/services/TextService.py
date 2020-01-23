@@ -36,6 +36,7 @@ class SelectionRequest(NamedTuple):
                 selection_set = selection_set.filter(upload_date__range=(self.left_date, self.right_date))
             else:
                 selection_set = selection_set.filter(upload_date__range=(self.right_date, self.left_date))
+
         return selection_set
 
 
