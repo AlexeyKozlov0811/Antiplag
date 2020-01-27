@@ -3,9 +3,10 @@ Module contains business-logic responsible for comparison of texts
 """
 
 import binascii
+import re
 from typing import Union, List, Dict
 from pymorphy2 import MorphAnalyzer
-from .StopSymbols import stop_words, stop_symbols
+from StopSymbols import stop_words, stop_symbols
 
 morph = MorphAnalyzer(lang='uk')
 
@@ -42,21 +43,35 @@ def CreateShingleDictionary(text: str) -> Dict[int, str]:
     start_index = 0
     i = 0
     while int(i) < len(separated_text):
-        if separated_text[i] not in stop_words:
+        if re.search(r"[^\w]*$", separated_text[i]):
+            word_with_symbol = re.sub(r"[^\w]*$", "", separated_text[i])
+            tmp = separated_text[i]
+            separated_text[i] = word_with_symbol
+
+        if shingle_len == 0:
+            if separated_text[i].lower() not in stop_words and separated_text[i] not in stop_symbols:
+                separated_list.append(separated_str)
+                shingle_len = 4
+                separated_str = ""
+                i = start_index
+            else:
+                separated_str += " "
+
+        if separated_text[i].lower() not in stop_words and separated_text[i] not in stop_symbols:
             shingle_len -= 1
             if shingle_len == 2:
                 start_index = i
+        separated_text[i] = tmp
         separated_str += separated_text[i]
+
         if shingle_len != 0:
             separated_str += " "
-        if shingle_len == 0:
+        i += 1
+        if i == len(separated_text):
             separated_list.append(separated_str)
-            shingle_len = 4
-            separated_str = ""
-            i = start_index
-        else:
-            i += 1
-    # print(separated_list)
+
+    print(len(separated_list))
+    print(separated_list)
     words_dict = dict(zip(hashes, separated_list))
     return words_dict
 
@@ -152,11 +167,7 @@ if __name__ == "__main__":
             u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
             u'шляхи. На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
             'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
-            u'бойових сокир, чорноліської тощо. Епітет — це слово чи словосполучення, завдяки особливій функції в ' \
-            u'тексті, допомагає слову набути нового значення або смислового відтінку, підкреслює характерну рису, ' \
-            u'визначальну якість певного предмету або явища, збагачує мову новим емоційним сенсом, додає до тексту ' \
-            u'певної мальовничості та насиченості. Місто розташоване на півночі України, на межі Полісся і лісостепу ' \
-            u'по обидва береги Дніпра в його середній течії.'
+            u'бойових сокир, чорноліської тощо. '
 
     text2 = u'Київ здавна розташовувався на перетині важливих шляхів. Ще за Київської Русі таким шляхом був ' \
             u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
@@ -198,33 +209,37 @@ if __name__ == "__main__":
     #         u'на межі Полісся і лісостепу по обидва береги Дніпра в його середній течії. Площа міста 836 км. Довжина ' \
     #         u'вздовж берега — понад 20 км. '
 
-    shingle_dict = CreateShingleDictionary(text1)
+    shingle_dict = CreateShingleDictionary(text2)
 
-    # print(shingle_dict)
+    print(shingle_dict)
+    # print(ShingleGeneration(Canonize(text1)))
+    # print(Canonize(text1))
+    # print(len(Canonize(text1)))
+    print(len(ShingleGeneration(Canonize(text2))))
 
-    shingled_canonized_text1 = ShingleGeneration(Canonize(text1))
-    shingled_canonized_text2 = ShingleGeneration(Canonize(text2))
-    shingled_canonized_text3 = ShingleGeneration(Canonize(text3))
-
-    similar_1 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text2)
-    similar_2 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text3)
-
-    # print(similar_1)
+    # shingled_canonized_text1 = ShingleGeneration(Canonize(text1))
+    # shingled_canonized_text2 = ShingleGeneration(Canonize(text2))
+    # shingled_canonized_text3 = ShingleGeneration(Canonize(text3))
     #
-    # print(similar_2)
+    # similar_1 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text2)
+    # similar_2 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text3)
     #
-    # print(similar_1 + similar_2)
-
-    similar_2 = RemoveDuplicates(similar_1, similar_2)
-
-    similar_1 += similar_2
-
-    # print(similar_1)
+    # # print(similar_1)
+    # #
+    # # print(similar_2)
+    # #
+    # # print(similar_1 + similar_2)
     #
-    # print(list(set(similar_1 + similar_2)))
-
-    similar_areas = GetSimilarAreasDefinition(shingle_dict, similar_1)
-
-    print(SplitText(text1, similar_areas))
-
-    print(text1)
+    # similar_2 = RemoveDuplicates(similar_1, similar_2)
+    #
+    # similar_1 += similar_2
+    #
+    # # print(similar_1)
+    # #
+    # # print(list(set(similar_1 + similar_2)))
+    #
+    # similar_areas = GetSimilarAreasDefinition(shingle_dict, similar_1)
+    #
+    # print(SplitText(text1, similar_areas))
+    #
+    # print(text1)
