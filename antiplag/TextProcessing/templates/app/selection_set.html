@@ -1,14 +1,16 @@
 {% extends "app/base.html" %}
 
 {% block content %}
-<br>
 
 
-<p id="number_of_texts">Кількість текстів: {{set_length}}</p>
-<p id="number_of_passed">Кількість текстів, що пройшли перевірку: </p>
-<p id="average_uniqueness">Середня унікальність: </p>
+<div class="set_info">
+    <p id="number_of_texts" class="selection_header">Кількість текстів: {{set_length}};</p>
+    <p id="success_uniqueness_test_border" class="selection_header">Поріг унікальності: {{success_uniqueness_test_border}};</p>
+    <p id="number_of_passed" class="selection_header">Кількість текстів, що пройшли перевірку: </p>
+    <p id="average_uniqueness" class="selection_header">Середня унікальність: </p>
+</div>
 
-<table class="sortable ">
+<table class="responsive sortable ">
     <tr>
         <th>№</th>
         <th>Джерело/Автор</th>
@@ -64,10 +66,10 @@
 {% load staticfiles %}
 
 <script src="{% static 'app/scripts/download_selection_set.js' %}"></script>
-
+<script src="{% static 'app/scripts/responsive-tables.js' %}"></script>
 <script>
 
-    $('#number_of_passed').text($('#number_of_passed').text() + `${$('.passed_td').length}`);
+    $('#number_of_passed').text($('#number_of_passed').text() + `${$('.passed_td').length}` + ';');
 
 
     number_of_texts = {{set_length}};
@@ -78,7 +80,7 @@
     uniqueness = uniqueness.reduce((sum, current) => sum + current, 0);
     uniqueness /= number_of_texts;
 
-    $('#average_uniqueness').text($('#average_uniqueness').text() + `${uniqueness.toFixed(2)}`);
+    $('#average_uniqueness').text(($('#average_uniqueness').text() + `${uniqueness.toFixed(2)}` + ';').replace('.',','));
 
 </script>
 

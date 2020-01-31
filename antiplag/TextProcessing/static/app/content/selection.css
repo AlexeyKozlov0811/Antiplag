@@ -55,9 +55,28 @@ th,td{
     float: right;
 }
 
+.set_info{
+    border: 1px solid gray;
+    border-bottom: 0;
+    padding: 10px;
+    background-color: #f1f1f1;
+}
+
+p#average_uniqueness{
+    margin: 0;
+}
+
 @media (max-width: 520px) {
     .filter_labels{
         flex-direction: column;
+    }
+}
+
+@media (max-width: 558px) {
+    table{
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
     }
 }
 
