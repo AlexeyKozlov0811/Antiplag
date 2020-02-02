@@ -6,7 +6,7 @@ import binascii
 import re
 from typing import Union, List, Dict
 from pymorphy2 import MorphAnalyzer
-from StopSymbols import stop_words, stop_symbols
+from .StopSymbols import stop_words, stop_symbols
 
 morph = MorphAnalyzer(lang='uk')
 
@@ -33,6 +33,15 @@ def ShingleGeneration(source: List[str]) -> List[int]:
     return out
 
 
+# Removes symbols after word
+def PunctuationRemoval(word: str):
+    if re.search(r'\W$', word):
+        word_without_symbol = re.sub(r'\W$', "", word)
+        return word_without_symbol
+    else:
+        return ""
+
+
 # Splits the text and returns dictionary of hashes and phrases
 def CreateShingleDictionary(text: str) -> Dict[int, str]:
     hashes = ShingleGeneration(Canonize(text))
@@ -42,26 +51,37 @@ def CreateShingleDictionary(text: str) -> Dict[int, str]:
     shingle_len = 4
     start_index = 0
     i = 0
+    stop_words_counter = 0
     while int(i) < len(separated_text):
-        if re.search(r"[^\w]*$", separated_text[i]):
-            word_with_symbol = re.sub(r"[^\w]*$", "", separated_text[i])
-            tmp = separated_text[i]
-            separated_text[i] = word_with_symbol
-
+        # print(stop_words_counter)
+        word_without_symbol = PunctuationRemoval(separated_text[i])
         if shingle_len == 0:
-            if separated_text[i].lower() not in stop_words and separated_text[i] not in stop_symbols:
+            if separated_text[i].lower() not in stop_words and separated_text[i] not in stop_symbols and (
+                    word_without_symbol == "" or word_without_symbol not in stop_words):
+                i = start_index
                 separated_list.append(separated_str)
                 shingle_len = 4
                 separated_str = ""
-                i = start_index
             else:
                 separated_str += " "
 
-        if separated_text[i].lower() not in stop_words and separated_text[i] not in stop_symbols:
+        if separated_text[i].lower() in stop_words or word_without_symbol in stop_words:
+            stop_words_counter += 1
+
+        if shingle_len == 4:
+            stop_words_counter = 0
+
+        if separated_text[i].lower() not in stop_words and separated_text[i] not in stop_symbols and (
+                word_without_symbol == "" or word_without_symbol not in stop_words):
             shingle_len -= 1
-            if shingle_len == 2:
+
+        if (shingle_len == 2 and stop_words_counter == 0) and separated_text[i].lower() not in stop_words and \
+                separated_text[i] not in stop_symbols and (word_without_symbol == "" or word_without_symbol not in stop_words):
+            start_index = i
+        else:
+            if shingle_len == 3 and stop_words_counter == 1:
                 start_index = i
-        separated_text[i] = tmp
+
         separated_str += separated_text[i]
 
         if shingle_len != 0:
@@ -69,66 +89,64 @@ def CreateShingleDictionary(text: str) -> Dict[int, str]:
         i += 1
         if i == len(separated_text):
             separated_list.append(separated_str)
-
-    print(len(separated_list))
-    print(separated_list)
     words_dict = dict(zip(hashes, separated_list))
     return words_dict
 
 
 # compares texts and returns list of similar hashed shingles
 def GetSimilarAreas(source1: List[int], source2: List[int]) -> List[int]:
-    # same = 0
     similar_phrases = []
     for i in range(len(source1)):
         if source1[i] in source2:
-            # same = same + 1
             similar_phrases.append(source1[i])
     return similar_phrases
-
-
-# def DuplicateSearch(similar_phrases_1, similar_phrases_2):
-#     without_duplicates = similar_phrases_1
-#     if similar_phrases_1 == similar_phrases_2:
-#         return similar_phrases_1
-#     else:
-#         for i in range(len(similar_phrases_2)):
-#             if similar_phrases_2[i] not in without_duplicates:
-#                 without_duplicates.append(similar_phrases_2[i])
-#     return without_duplicates
 
 
 # returns common parts of the texts
 def GetSimilarAreasDefinition(text1_dictionary: Dict[int, str], compared_texts: List[Union[int, str]]) -> List[str]:
     areas = []
-    new = []
+    new_list_of_areas = []
     defined_area = ""
     word = ""
     areas_str = ""
-    counter = 0
+    last_words_string = ""
     for k in range(len(compared_texts)):
         if compared_texts[k] in text1_dictionary:
             areas.append((text1_dictionary.get(compared_texts[k])))
-        else:
-            print("false")
-    for k in range(len(areas)):
-        new.append(areas[k].split(' '))
-        for l in range(len(new[k])):
-            ind = new[k][l]
-            if new[k][l] not in stop_words:
-                counter += 1
-                if counter == 3:
-                    word = new[k][l]
-        areas_str = ' '.join(new[k])
+    key = False
+    for i in range(len(areas)):
+        new_list_of_areas.append(areas[i].split(' '))
         counter = 0
-        if word not in defined_area:
-            defined_area += "#" + areas_str + " "
-        else:
-            areas_str = areas_str.split()
-            defined_area += ' '.join(areas_str[areas_str.index(word) + 1:len(new[k])]) + " "
+        middle_words = ""
+        for j in range(len(new_list_of_areas[i])):
+
+            view_var_delete_later = new_list_of_areas[i][j]
+
+            word_without_punct = PunctuationRemoval(new_list_of_areas[i][j])
+            if new_list_of_areas[i][j].lower() not in stop_words and new_list_of_areas[i][j] not in stop_symbols and (
+                    word_without_punct == "" or word_without_punct not in stop_words):
+                counter += 1
+
+            if counter == 2 or counter == 3:
+                middle_words += new_list_of_areas[i][j] + ' '
+            if counter == 4:
+                middle_words = re.sub(r'\s$', "", middle_words)
+
+            if middle_words not in defined_area and counter > 3:
+                defined_area += " #" + ' '.join(new_list_of_areas[i])
+                key = True
+            else:
+                key = False
+
+            if counter == 4 and key is False:
+                last_words_string += ' ' + new_list_of_areas[i][j]
+
+        defined_area += last_words_string
+        last_words_string = ""
+
     list_of_areas = defined_area.split('#')
     del list_of_areas[0]
-    # print(list_of_areas)
+
     return list_of_areas
 
 
@@ -153,21 +171,22 @@ def SimilarityPercentageCalculation(source: List[int], same: List[int]) -> float
         return 0.0
 
 
-def SplitText(text, burrowed_content):
-    diapasons = str(len(burrowed_content))
-    for burrowed_str in burrowed_content:
-        first = text.find(burrowed_str)
-        last = first+len(burrowed_str)
+def SplitText(text, borrowed_content):
+    diapasons = str(len(borrowed_content))
+    for borrowed_str in borrowed_content:
+        first = text.find(borrowed_str)
+        last = first + len(borrowed_str)
         diapasons += " " + str(first) + ":" + str(last)
     return diapasons
 
 
 if __name__ == "__main__":
     text1 = u'Київ здавна розташовувався на перетині важливих шляхів. Ще за Київської Русі таким шляхом був ' \
-            u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
-            u'шляхи. На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
-            'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
-            u'бойових сокир, чорноліської тощо. '
+            u'легендарний Шлях із варягів у греки. Після цього промий його під холодною водою. Нині місто перетинають ' \
+            u'міжнародні автомобільні та залізничні шляхи. Потім висип рис в каструлю з киплячою підсоленою водою. ' \
+            u'Пропорції: 1 стакан дикого рису на 3 склянки води На сучасній території України відомі поселення ' \
+            u'багатьох археологічних культур, починаючи з доби палеоліту — мустьєрської, гребениківської, кукрецької, ' \
+            u'трипільської, середньостогівської, ямної, бойових сокир, чорноліської тощо.'
 
     text2 = u'Київ здавна розташовувався на перетині важливих шляхів. Ще за Київської Русі таким шляхом був ' \
             u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
@@ -189,42 +208,23 @@ if __name__ == "__main__":
             u'певної мальовничості та насиченості. Місто розташоване на півночі України, на межі Полісся і лісостепу ' \
             u'по обидва береги Дніпра в його середній течії.'
 
-    # text2 = u'Київ здавна розташовувався на перетині важливих шляхів. Ще за Київської Русі таким шляхом був ' \
-    #         u'легендарний Шлях із варягів у греки. Нині місто перетинають міжнародні автомобільні та залізничні ' \
-    #         u'шляхи. На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
-    #         u'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
-    #         u'бойових сокир, чорноліської тощо. В античні часи на території України виникли державні утворення ' \
-    #         u'скіфів, давньогрецьких колоністів, готів, але відправним пунктом української слов\'янської державності ' \
-    #         u'й культури вважається Київська Русь IX—XIII століть. Після монгольської навали її спадкоємцем стало ' \
-    #         u'Руське королівство XIII—XIV століття. Воно було поглинуте сусідніми Литвою та Польщею, ' \
-    #         u'об\'єднаними з XVI століття у федеративну Річ Посполиту.'
-    #
-    # text3 = u'На сучасній території України відомі поселення багатьох археологічних культур, починаючи з доби ' \
-    #         u'палеоліту — мустьєрської, гребениківської, кукрецької, трипільської, середньостогівської, ямної, ' \
-    #         u'бойових сокир, чорноліської тощо. В античні часи на території України виникли державні утворення ' \
-    #         u'скіфів, давньогрецьких колоністів, готів, але відправним пунктом української слов\'янської державності ' \
-    #         u'й культури вважається Київська Русь IX—XIII століть. Після монгольської навали її спадкоємцем стало ' \
-    #         u'Руське королівство XIII—XIV століття. Воно було поглинуте сусідніми Литвою та Польщею, ' \
-    #         u'об\'єднаними з XVI століття у федеративну Річ Посполиту. Місто розташоване на півночі України, ' \
-    #         u'на межі Полісся і лісостепу по обидва береги Дніпра в його середній течії. Площа міста 836 км. Довжина ' \
-    #         u'вздовж берега — понад 20 км. '
-
-    shingle_dict = CreateShingleDictionary(text2)
+    shingle_dict = CreateShingleDictionary(text1)
 
     print(shingle_dict)
+
     # print(ShingleGeneration(Canonize(text1)))
     # print(Canonize(text1))
     # print(len(Canonize(text1)))
-    print(len(ShingleGeneration(Canonize(text2))))
+    # print(len(ShingleGeneration(Canonize(text1))))
 
-    # shingled_canonized_text1 = ShingleGeneration(Canonize(text1))
-    # shingled_canonized_text2 = ShingleGeneration(Canonize(text2))
+    shingled_canonized_text1 = ShingleGeneration(Canonize(text1))
+    shingled_canonized_text2 = ShingleGeneration(Canonize(text2))
     # shingled_canonized_text3 = ShingleGeneration(Canonize(text3))
     #
-    # similar_1 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text2)
+    similar_1 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text2)
     # similar_2 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text3)
     #
-    # # print(similar_1)
+    # print(similar_1)
     # #
     # # print(similar_2)
     # #
@@ -238,7 +238,9 @@ if __name__ == "__main__":
     # #
     # # print(list(set(similar_1 + similar_2)))
     #
-    # similar_areas = GetSimilarAreasDefinition(shingle_dict, similar_1)
+    similar_areas = GetSimilarAreasDefinition(shingle_dict, similar_1)
+
+    # print(similar_areas)
     #
     # print(SplitText(text1, similar_areas))
     #
