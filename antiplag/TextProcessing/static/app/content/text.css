@@ -76,6 +76,10 @@
     width: 20px;
 }
 
+.text_list_info{
+    margin-top: 10px;
+}
+
 .burrowed_content{
     color: red;
 }
