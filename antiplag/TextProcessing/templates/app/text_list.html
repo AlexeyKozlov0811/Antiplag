@@ -1,10 +1,12 @@
 {% for i in all_sources %}
     <form class="text_list" action="/text/{{i.id}}">
         <div class="text_info">
-            {% if i.author == "Unknown" %}
-                <a class="text_source" href="{{ i.source }}">Джерело:{{ i.source }}</a>
-            {% else %}
+            {% if i.source == "Author" %}
                 <p class="text_source">Автор: {{ i.author }}</p>
+            {% elif i.author == "Unknown" %}
+                <p class="text_source">Джерело: <a href="{{ i.source }}">{{ i.source }}</a></p>
+            {% else %}
+                <p class="text_source">Джерело: {{ i.source }}</p>
             {% endif %}
             <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
             <button class="text_details" type="submit">Переглянути детально</button>

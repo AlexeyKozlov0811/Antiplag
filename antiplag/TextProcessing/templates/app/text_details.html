@@ -11,7 +11,7 @@
             <p class="text_upload_date">Дата завантаження: {{ i.upload_date }}</p>
             {% if i.uniqueness == -1.0 %}
                 <p>Унікальність = не перевірено</p>
-            {% else %}
+            {% elif i.uniqueness != 101.0 %}
                 <p>Унікальність = {{i.uniqueness}}</p>
             {% endif %}
             {% if i.get_sources != -1 %}

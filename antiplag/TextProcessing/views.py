@@ -29,9 +29,13 @@ def texts(request):
     """Renders the text list page."""
     assert isinstance(request, HttpRequest)
     all_text = Text.objects.all()
+    processing_texts = len(all_text.filter(uniqueness=-1.0))
+    web_texts = len(all_text.filter(uniqueness=101))
     return render(request,
                   'app/text_catalog.html',
-                  {'all_sources': all_text, }
+                  {'all_sources': all_text,
+                   'processing_texts': processing_texts,
+                   'web_texts': web_texts, }
                   )
 
 
@@ -39,9 +43,11 @@ def account_render(request):
     """Renders the account page."""
     assert isinstance(request, HttpRequest)
     user_texts = Text.objects.filter(author=request.user.username)
+    processing_texts = len(user_texts.filter(uniqueness=-1.0))
     return render(request,
                   'app/account.html',
-                  {'all_sources': user_texts},
+                  {'all_sources': user_texts,
+                   'processing_texts': processing_texts, },
                   )
 
 

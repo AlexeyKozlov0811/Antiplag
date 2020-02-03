@@ -88,7 +88,7 @@ def FindSimilarInWeb(text_id: int) -> None:
                 web_text = Text()
                 web_text.source = url
                 web_text.content = GetWebContent(url)
-                web_text.uniqueness = -1.0
+                web_text.uniqueness = 101
                 if web_text.content != "0":
                     web_text.shingle_dict = json.dumps(CreateShingleDictionary(web_text.content),
                                                        ensure_ascii=False)
