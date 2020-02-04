@@ -4,9 +4,9 @@ Module contains business-logic responsible for comparison of texts
 
 import binascii
 import re
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Tuple
 from pymorphy2 import MorphAnalyzer
-from StopSymbols import stop_words, stop_symbols
+from .StopSymbols import stop_words, stop_symbols
 
 morph = MorphAnalyzer(lang='uk')
 
@@ -97,7 +97,6 @@ def CreateShingleDictionary(text: str) -> Dict[int, str]:
 
         separated_str += separated_text[i]
 
-
         if shingle_len != 0:
             separated_str += " "
         i += 1
@@ -117,16 +116,19 @@ def GetSimilarAreas(source1: List[int], source2: List[int]) -> List[int]:
 
 
 # returns common parts of the texts
-def GetSimilarAreasDefinition(text1_dictionary: Dict[int, str], compared_texts: List[Union[int, str]]) -> List[str]:
+def GetSimilarAreasDefinition(text1_dictionary: Dict[int, str],
+                              compared_texts: Dict[Union[int, str], List[Union[int, str]]],
+                              text_type=0)\
+        -> Union[Dict[Union[int, str], List[Union[int, str]]], List[str]]:
     areas = []
     new_list_of_areas = []
     defined_area = ""
     word = ""
     areas_str = ""
     last_words_string = ""
-    for k in range(len(compared_texts)):
-        if compared_texts[k] in text1_dictionary:
-            areas.append((text1_dictionary.get(compared_texts[k])))
+    for k in range(len(list(compared_texts.values())[0])):
+        if list(compared_texts.values())[0][k] in text1_dictionary:
+            areas.append((text1_dictionary.get(list(compared_texts.values())[0][k])))
 
     for i in range(len(areas)):
         new_list_of_areas.append(areas[i].split(' '))
@@ -158,21 +160,38 @@ def GetSimilarAreasDefinition(text1_dictionary: Dict[int, str], compared_texts: 
 
     list_of_areas = defined_area.split('#')
     del list_of_areas[0]
+    if text_type:
+        dict_of_areas = {list(compared_texts.keys())[0]: list_of_areas}
+        return dict_of_areas
+    else:
+        return list_of_areas
 
-    return list_of_areas
 
-
-def RemoveDuplicates(old_similar_phrases: List[int], new_similar_phrases: List[int]) -> List[int]:
-    duplicates_indexes = []
-    for word_in_old in old_similar_phrases:
-        for word_in_new in new_similar_phrases:
-            if word_in_new == word_in_old:
-                duplicates_indexes.append(new_similar_phrases.index(word_in_new))
-    duplicates_indexes = list(set(duplicates_indexes))
-    duplicates_indexes.sort(reverse=True)
-    for duplicate in duplicates_indexes:
-        del new_similar_phrases[duplicate]
-    return new_similar_phrases
+def RemoveDuplicates(old_similar_phrases: Dict[Union[int, str], List[int]],
+                     new_similar_phrases: Dict[int, List[int]]) -> Dict[Union[int, str], List[int]]:
+    duplicates_keys = []
+    transformed_dict = {}
+    if old_similar_phrases:
+        for key in old_similar_phrases:
+            if list(new_similar_phrases.values())[0] == old_similar_phrases[key]:
+                sources = str(key) + "_" + str(list(new_similar_phrases.keys())[0])
+                # sources.append(list(new_similar_phrases.keys())[0])
+                duplicates_keys.append(key)
+                transformed_dict.update({sources: list(new_similar_phrases.values())[0]})
+    else:
+        old_similar_phrases.update(new_similar_phrases)
+        # for word_in_old in old_similar_phrases:
+        #     for word_in_new in new_similar_phrases:
+        #         if word_in_new == word_in_old:
+        #             duplicates_indexes.append(new_similar_phrases[list(new_similar_phrases.keys())[0]].index(word_in_new))
+        # duplicates_indexes = list(set(duplicates_indexes))
+        # duplicates_indexes.sort(reverse=True)
+        # for duplicate in duplicates_indexes:
+        #     del new_similar_phrases[duplicate]
+    old_similar_phrases.update(transformed_dict)
+    for key in duplicates_keys:
+        del old_similar_phrases[key]
+    return old_similar_phrases
 
 
 # counts the percentage of two texts, will be changed later
