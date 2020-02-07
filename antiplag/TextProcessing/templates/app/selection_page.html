@@ -6,8 +6,14 @@
             {% csrf_token %}
 
             <fieldset class="name_filter filters">
-                <legend>Фільтр по джерелу текста (Оберіть один з варіантів)</legend>
-                <label class="name_filter_label">Фільтр по автору<input class="name_filter_input_field input_field" name="author_texts" type="text"></label>
+                <legend>Фільтр по джерелу текста</legend>
+                {% if user.is_authenticated %}
+                    {% if user.is_staff %}
+                        <label class="name_filter_label">Фільтр по автору<input class="name_filter_input_field input_field" name="author_texts" type="text"></label>
+                    {% else %}
+                        <label class="name_filter_label">Фільтр по автору<input class="name_filter_input_field input_field" name="author_texts" type="text" value="{{user.username}}" readonly></label>
+                    {% endif %}
+                {% endif %}
                 <label class="name_filter_label">Фільтр по ключовим словам джерела<input class="name_filter_input_field input_field" name="source_filters" type="text"></label>
             </fieldset>
 
@@ -15,8 +21,13 @@
                 <legend>Фільтр по відсотку унікальності</legend>
                 <div class="filter_labels">
                     <label>Поріг успішного проходження <input class="input_field" name="uniqueness_success_border" type="number" min="0.0" max="100.0" value="0.0"></label>
-                    <label>Верхня границя <input class="input_field" name="uniqueness_upper_border" type="number" min="-1.0" max="101.0" value="100.0"></label>
-                    <label>Нижня границя <input class="input_field" name="uniqueness_down_border" type="number" min="-1.0" max="101.0" value="0.0"></label>
+                    {% if user.is_staff %}
+                        <label>Верхня границя <input class="input_field" name="uniqueness_upper_border" type="number" min="-1.0" max="101.0" value="101.0"></label>
+                        <label>Нижня границя <input class="input_field" name="uniqueness_down_border" type="number" min="-1.0" max="101.0" value="-1.0"></label>
+                    {% else %}
+                        <label>Верхня границя <input class="input_field" name="uniqueness_upper_border" type="number" min="0.0" max="100.0" value="100.0"></label>
+                        <label>Нижня границя <input class="input_field" name="uniqueness_down_border" type="number" min="0.0" max="100.0" value="0.0"></label>
+                    {% endif %}
                 </div>
             </fieldset>
 

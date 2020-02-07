@@ -68,14 +68,26 @@ def add_text(request):
         author = request.user.username
     text_id = CreateText(content, author)
     check_uniqueness.delay(text_id)
-    return HttpResponseRedirect("/")
+    return HttpResponseRedirect("/text/" + str(text_id) + '/')
 
 
 def select_texts(request):
-    Selection = SelectionRequest(author_filter=request.POST.get("author_texts"),
+    uniqueness_upper_border = float(request.POST.get("uniqueness_upper_border")),
+    uniqueness_upper_border = uniqueness_upper_border[0]
+    uniqueness_down_border = float(request.POST.get("uniqueness_down_border")),
+    uniqueness_down_border = uniqueness_down_border[0]
+    if request.user.is_staff:
+        author = request.POST.get("author_texts")
+    else:
+        author = request.user.username
+        if not (0.0 <= uniqueness_upper_border <= 100.0):
+            uniqueness_upper_border = 100.0
+        if not (0.0 <= uniqueness_down_border <= 100.0):
+            uniqueness_down_border = 0.0
+    Selection = SelectionRequest(author_filter=author,
                                  key_words_filter=request.POST.get("source_filters").split(' '),
-                                 uniqueness_upper_border=float(request.POST.get("uniqueness_upper_border")),
-                                 uniqueness_down_border=float(request.POST.get("uniqueness_down_border")),
+                                 uniqueness_upper_border=uniqueness_upper_border,
+                                 uniqueness_down_border=uniqueness_down_border,
                                  left_date=request.POST.get("left_date"),
                                  right_date=request.POST.get("right_date")
                                  )
@@ -105,7 +117,8 @@ def text_source(request, first_text_id, second_text_id):
     if request.is_ajax():
         text_content = GetTextContent(second_text_id)
         text_burrowed_content = GetTextBurrowedContent(first_text_id, second_text_id)
-        response = {'text': text_content.rstrip('\n'), 'burrowed_content': text_burrowed_content}
+        response = {'text': text_content.rstrip('\n'),
+                    'burrowed_content': text_burrowed_content}
         return JsonResponse(response)
     else:
         raise Http404
@@ -116,7 +129,9 @@ def highlight_text(request, pk):
     if request.is_ajax():
         text_burrowed_content = GetTextBurrowedContent(pk)
         if text_burrowed_content:
-            response = {'text': text_burrowed_content}
+            text_burrowed_content_sources = list(text_burrowed_content.keys())
+            response = {'text': text_burrowed_content,
+                        'sources': text_burrowed_content_sources}
         else:
             response = None
         return JsonResponse(response)

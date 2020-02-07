@@ -19,11 +19,13 @@ class SelectionRequest(NamedTuple):
     right_date: str
 
     def GetSelectionSet(self):
-        selection_set = Text.objects.filter(uniqueness__range=(self.uniqueness_down_border, self.uniqueness_upper_border))
+        selection_set = Text.objects.filter(uniqueness__range=(self.uniqueness_down_border,
+                                                               self.uniqueness_upper_border))
 
         if self.author_filter != "":
             selection_set = selection_set.filter(author=self.author_filter)
-        elif self.key_words_filter:
+
+        if self.key_words_filter:
             for key_word in self.key_words_filter:
                 selection_set = selection_set.filter(source__icontains=key_word)
 
@@ -86,6 +88,7 @@ def FindSimilarInWeb(text_id: int) -> None:
         for url in SetOfUrls:
             if not Text.objects.filter(source=url).exists():
                 web_text = Text()
+                web_text.author = "web"
                 web_text.source = url
                 web_text.content = GetWebContent(url)
                 web_text.uniqueness = 101
@@ -101,7 +104,7 @@ def FindSimilarInWeb(text_id: int) -> None:
 # returns list with sources, similar parts and dictionary with sources id as a key and text parts as a value
 def FindSimilarAreas(text_id: int, user_text_shingles: List[int]) -> Tuple[List[int], Dict[Tuple[int], List[int]], Dict[int, List[str]]]:
     sources: List[int] = []
-    similar_parts: Dict[Tuple[int], List[int]] = {}
+    similar_parts: Dict[int, List[int]] = {}
     database_text_similar_content: Dict[int: List[str]] = {}
     for data_base_text in Text.objects.exclude(id=text_id).exclude(uniqueness=0.0):
 

@@ -29,7 +29,9 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'home' %}">Домашня сторінка</a></li>
-                    <li><a href="{% url 'selection' %}">Вибірка текстів</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a href="{% url 'selection' %}">Вибірка текстів</a></li>
+                    {% endif %}
                     {% if user.is_staff %}
                         <li><a href="{% url 'texts' %}">Каталог текстів</a></li>
                     {% endif %}

@@ -11,10 +11,44 @@ $.ajax({
     url: '/highlight_text/' + id + '/',
     data: "",
     success: function(data) {
-        if (data['text'] !== undefined){
-            for (let text_idx = 0;text_idx<data['text'].length; text_idx++){
-                    document.getElementById("first_text_area").innerHTML = document.getElementById("first_text_area").innerHTML.replace(`${data['text'][text_idx]}`, `<span class='orange'>${data['text'][text_idx]}</span>`);
+        console.log(data)
+        burrowed_text = data['text']
+        sources = data['sources']
+
+        if (data !== undefined){
+            area_style = 'background:' + '#ffff00;';
+            new_text = $("#first_text_area").html().trim();
+            for (let key of sources){
+
+                for (let text_idx = 0; text_idx < burrowed_text[key].length; text_idx++){
+                    burrowed_content = `${burrowed_text[key][text_idx]}`
+                    number_of_match = 'first_match'
+                    if (key.split("_").length >= 3){
+                        number_of_match = 'three_and_more_matches'
+                        area_style = 'background:' + '#ff0000;';
+                    }
+                    else if (key.split("_").length == 2){
+                        number_of_match = 'second_match';
+                        area_style = 'background:' + '#ffaa00;';
+                    }
+                    highlighted_content = '<span class=' + `${number_of_match} ` + ' ' + 'style=' + `${area_style}>` + `${burrowed_content}` + '</span>';
+
+                    const regex = /\[|\\|\^|\$|\.|\||\?|\*|\+|\(|\)/g;
+                    let text = '[5]';
+                    text = text.replace(regex, '$$$');
+
+                    const regex1 = '/'+ text +'/g';
+                    const regex2 = new RegExp(text, 'g');
+                    new_text = new_text.replace(regex2, highlighted_content);
+//                    new_text = new_text.replace(burrowed_content, highlighted_content);
+
+
+                    console.log(regex1);
+                    console.log(regex2);
+
                 }
+            }
+            $("#first_text_area").html(new_text);
         }
     },
     dataType: 'json',
