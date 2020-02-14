@@ -4,8 +4,9 @@
 
     {% for i in text %}
         <div class="wrapper">
-                <h3 class="page_header">Текст: №{{ i.id }}</h3>
-                {% if i.author == "web"   %}
+            <h3 class="page_header">Текст: №{{ i.id }}</h3>
+            <div class="first_text">
+                {% if i.author == "web" %}
                     <h4>Джерело: <a class="text_source" href="{{ i.source }}">{{ i.source }}</a></h4>
                 {% elif i.author != user.username %}
                     <h4 class="text_source">Автор: {{ i.author }}</h4>
@@ -16,20 +17,26 @@
                 {% elif i.uniqueness != 101.0 %}
                     <h4>Унікальність = {{i.uniqueness}}</h4>
                 {% endif %}
-                {% if i.get_sources != -1 %}
-                    <div class="sources">Джерела:</div>
-                    {% for source in i.get_sources %}
-                        <button class="get_source first_text_button" value="{{source}}">Порівняти з текстом № {{source}}</button>
-                        <a class="second_text_button" href="http://{{ request.get_host }}/text/{{source}}/">Переглянути текст №{{source}} детальніше</a>
-                    {% endfor %}
-                {% endif %}
 
-                <div class="first_text">
-                    <p id="first_text_area" class="detailed_text_area">{{i.content}}</p>
-                </div>
-                <div class="second_text">
-                    <p id="second_text_area" class="detailed_text_area"></p>
-                </div>
+                <h4 class="">Текст:</h4>
+
+                <p id="first_text_area" class="detailed_text_area">{{i.content}}</p>
+
+            </div>
+            {% if i.get_sources != -1 %}
+            <div class="second_text">
+
+                    <h4 class="sources">Запозичення:</h4>
+                    {% for source in i.get_sources %}
+                        <div class="source_list">
+                            <a class="source_link" href="http://{{ request.get_host }}/text/{{source}}/">http://{{ request.get_host }}/text/{{source}}/</a>
+                            <button class="source_navigate_button get_source" value="{{source}}">Порівняти з текстом</button>
+                        </div>
+                    {% endfor %}
+
+                <p id="second_text_area" class="detailed_text_area"></p>
+            </div>
+            {% endif %}
         </div>
     {% endfor %}
 {% endblock %}

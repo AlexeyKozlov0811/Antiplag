@@ -46,4 +46,3 @@ $.ajax({
     },
     dataType: 'json',
 });
-

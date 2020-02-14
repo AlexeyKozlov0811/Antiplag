@@ -7,6 +7,9 @@ import re
 from typing import Union, List, Dict, Tuple
 from pymorphy2 import MorphAnalyzer
 from .StopSymbols import stop_words, stop_symbols
+from django.conf import settings
+
+# shingle_len = settings.SHINGLE_LENGTH
 
 morph = MorphAnalyzer(lang='uk')
 

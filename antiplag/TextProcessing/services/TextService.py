@@ -68,7 +68,7 @@ def GetTextBurrowedContent(main_text_id: int, second_text_id: int = -1) -> str:
 
 
 # function separates burrowed content and its source in another database field
-def SeparateBurrowedContent(text_id: int, main_burrowed_content: Dict[Tuple[int], List[str]],
+def SeparateBurrowedContent(text_id: int, main_burrowed_content: Dict[int, List[str]],
                             another_burrowed_content: Dict[int, List[str]]) -> None:
     text = Text.objects.get(id=text_id)
     burrowed_content = {text.id: main_burrowed_content}
@@ -102,7 +102,8 @@ def FindSimilarInWeb(text_id: int) -> None:
 
 # function finds similar areas in text by id and
 # returns list with sources, similar parts and dictionary with sources id as a key and text parts as a value
-def FindSimilarAreas(text_id: int, user_text_shingles: List[int]) -> Tuple[List[int], Dict[Tuple[int], List[int]], Dict[int, List[str]]]:
+def FindSimilarAreas(text_id: int, user_text_shingles: List[int])\
+        -> Tuple[List[int], Dict[int, List[int]], Dict[int, List[str]]]:
     sources: List[int] = []
     similar_parts: Dict[int, List[int]] = {}
     database_text_similar_content: Dict[int: List[str]] = {}
@@ -112,7 +113,7 @@ def FindSimilarAreas(text_id: int, user_text_shingles: List[int]) -> Tuple[List[
 
         similar_part = {data_base_text.id: GetSimilarAreas(user_text_shingles, database_text_shingles)}
 
-        if similar_part:
+        if similar_part[data_base_text.id]:
             sources.append(data_base_text.id)
 
             str_similar_part = [str(item) for item in list(similar_part.values())[0]]
@@ -155,7 +156,6 @@ def CompareWithDatabaseTexts(text_id: int) -> None:
     if text.uniqueness < 0:
         text.uniqueness = 0.0
     text.save()
-    # print(similar_parts)
-    user_text_similar_content = GetSimilarAreasDefinition(user_text_shingle_dict, similar_parts, 1)
-    # print(user_text_similar_content)
-    SeparateBurrowedContent(text_id, user_text_similar_content, database_text_similar_content)
+    if text.uniqueness != 100.0:
+        user_text_similar_content = GetSimilarAreasDefinition(user_text_shingle_dict, similar_parts, 1)
+        SeparateBurrowedContent(text_id, user_text_similar_content, database_text_similar_content)

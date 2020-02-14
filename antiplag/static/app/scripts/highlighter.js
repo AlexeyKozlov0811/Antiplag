@@ -33,18 +33,11 @@ $.ajax({
                     }
                     highlighted_content = '<span class=' + `${number_of_match} ` + ' ' + 'style=' + `${area_style}>` + `${burrowed_content}` + '</span>';
 
-                    const regex = /\[|\\|\^|\$|\.|\||\?|\*|\+|\(|\)/g;
-                    let text = '[5]';
-                    text = text.replace(regex, '$$$');
+                    const symbols = /\[|\\|\^|\$|\.|\||\?|\*|\+|\(|\)/g;
+                    burrowed_content = burrowed_content.replace(symbols, '\\$&');
+                    const regex = new RegExp(burrowed_content, 'g');
+                    new_text = new_text.replace(regex, highlighted_content);
 
-                    const regex1 = '/'+ text +'/g';
-                    const regex2 = new RegExp(text, 'g');
-                    new_text = new_text.replace(regex2, highlighted_content);
-//                    new_text = new_text.replace(burrowed_content, highlighted_content);
-
-
-                    console.log(regex1);
-                    console.log(regex2);
 
                 }
             }

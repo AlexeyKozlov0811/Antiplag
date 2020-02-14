@@ -13,7 +13,7 @@ $(document).ready(function () {
                 second_text_text = data['text'].replace(/\s+/g, ' ');
                 burrowed_content = data['burrowed_content'];
                 $(".first_text").css({"display": "inline-block", "width": "48%"});
-                $(".second_text").css("display", "inline-block");
+                $("#second_text_area").css("display", "inline-block");
                 $("#second_text_area").text(second_text_text);
                 area_style = 'background:' + '#ffff00;';
                 if (burrowed_content !== undefined) {

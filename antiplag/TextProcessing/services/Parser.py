@@ -5,8 +5,10 @@ import math
 import requests
 from typing import Union, List
 from bs4 import BeautifulSoup
+from django.conf import settings
 
-pages = 1
+
+pages_of_search = settings.SEARCH_RESULTS // 10 + 1
 
 
 # function returns web page html code or 0 in case of failure
@@ -23,7 +25,7 @@ def GetHTML(url: str) -> Union[int, requests.Response]:
 def GetSearchQueryResult(search_query: str) -> List[str]:
     QueryResultUrls = []
     SearchUrl = 'http://www.google.com/search?q=' + search_query + '&start='
-    for NumOfPage in range(pages):
+    for NumOfPage in range(pages_of_search):
         SearchResult = GetHTML(SearchUrl + str(NumOfPage * 10))
         if SearchResult:
             QueryResultUrls = GetCleanLink(SearchResult)
@@ -84,7 +86,7 @@ def FindTextUrls(text: str) -> List[str]:
     AllParts = TextSeparation(text)
     for Query in AllParts:
         try:
-            Urls.append(GetSearchQueryResult(Query)[0])
+            Urls += GetSearchQueryResult(Query)[0:settings.SEARCH_RESULTS]
         except IndexError:
             return ["0"]
         else:
@@ -93,7 +95,7 @@ def FindTextUrls(text: str) -> List[str]:
 
 # debug
 if __name__ == "__main__":
-    pages = 1
+    pages_of_search = 1
     query = "Матеріал з Вікіпедії — вільної енциклопедії. Python (найчастіше вживане прочитання — «Па́йтон», " \
             "запозичено назву[5] з британського шоу Монті Пайтон) — інтерпретована об'єктно-орієнтована мова " \
             "програмування високого рівня зі строгою динамічною типізацією.[6] Розроблена в 1990 році Гвідо ван " \

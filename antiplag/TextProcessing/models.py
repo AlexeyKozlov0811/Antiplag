@@ -3,6 +3,7 @@ Module contains Django ORM entities
 """
 from django.conf import settings
 from django.db import models
+from django.http import HttpRequest
 from django.utils import timezone
 import json
 
@@ -11,7 +12,7 @@ class Text(models.Model):
     id = models.AutoField(primary_key=True)
     author = models.CharField(max_length=255, verbose_name="Автор", default="Unknown", editable=settings.DEBUG)
     source = models.CharField(max_length=255, verbose_name="Джерело", default="Author", editable=settings.DEBUG)
-    sources = models.TextField(default=-1, verbose_name="Джерела", editable=settings.DEBUG)
+    sources = models.TextField(default=[-1], verbose_name="Джерела", editable=settings.DEBUG)
     content = models.TextField(verbose_name="Текст", editable=settings.DEBUG)
     burrowed_content = models.TextField(default=json.dumps({"": []}), verbose_name="Запозичений текст", editable=settings.DEBUG)
     shingle_dict = models.TextField(default=json.dumps({"": ""}), verbose_name="Словник шинглів", editable=settings.DEBUG)
@@ -26,6 +27,17 @@ class Text(models.Model):
         without_separators = without_separators.replace(" 2!_!_!2 ", "")
         return without_separators
 
+    # def get_sources_links(self):
+    #     sources_dict = {}
+    #     sources_ids = json.loads(self.sources)
+    #     for source_id in sources_ids:
+    #         text = Text.objects.get(id=source_id)
+    #         if text.author == 'web':
+    #             sources_dict.update({source_id: text.source})
+    #         else:
+    #             source_link = 'http://' + HttpRequest.get_host() + '/text/' + source_id + '/'
+    #             sources_dict.update({source_id: source_link})
+    #     return sources_dict
+
     def get_sources(self):
         return json.loads(self.sources)
-

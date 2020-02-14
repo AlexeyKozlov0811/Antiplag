@@ -30,7 +30,7 @@
 <form class="login" method="POST" action="{% url 'account_login' %}">
   {% csrf_token %}
   <input class="input" type="text" name="login" placeholder="Логін" required>
-  <input class="input" type="tel" name="password" placeholder="Пароль" required>
+  <input class="input" type="password" name="password" placeholder="Пароль" required>
   {% if redirect_field_value %}
   <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
   {% endif %}
