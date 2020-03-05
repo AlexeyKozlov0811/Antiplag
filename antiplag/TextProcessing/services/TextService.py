@@ -69,10 +69,10 @@ def GetTextBurrowedContent(main_text_id: int, second_text_id: int = -1) -> str:
 
 # function separates burrowed content and its source in another database field
 def SeparateBurrowedContent(text_id: int, main_burrowed_content: Dict[int, List[str]],
-                            another_burrowed_content: Dict[int, List[str]]) -> None:
+                            another_texts_burrowed_content: Dict[int, List[str]]) -> None:
     text = Text.objects.get(id=text_id)
     burrowed_content = {text.id: main_burrowed_content}
-    burrowed_content.update(another_burrowed_content)
+    burrowed_content.update(another_texts_burrowed_content)
     text.burrowed_content = json.dumps(burrowed_content, ensure_ascii=False)
     # for content in burrowed_content:
     #     self.content = self.content.replace(content,
@@ -118,14 +118,15 @@ def FindSimilarAreas(text_id: int, user_text_shingles: List[int])\
 
             str_similar_part = [str(item) for item in list(similar_part.values())[0]]
 
-            similar_part = RemoveDuplicates(similar_parts, similar_part)
+            similar_parts = RemoveDuplicates(similar_parts, similar_part)
+
+
 
             data_base_text_shingle_dict = json.loads(data_base_text.shingle_dict)
 
             data_base_similar_content = GetSimilarAreasDefinition(data_base_text_shingle_dict,
                                                                   {data_base_text.id: str_similar_part})
             database_text_similar_content[data_base_text.id] = data_base_similar_content
-            similar_parts.update(similar_part)
 
     return sources, similar_parts, database_text_similar_content
 

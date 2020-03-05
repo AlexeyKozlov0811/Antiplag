@@ -12,8 +12,9 @@ $(document).ready(function () {
                 console.log(data);
                 second_text_text = data['text'].replace(/\s+/g, ' ');
                 burrowed_content = data['burrowed_content'];
+//                $(".source_list").css({"display": "none"});
                 $(".first_text").css({"display": "inline-block", "width": "48%"});
-                $(".second_text").css("display", "inline-block");
+                $("#second_text_area").css("display", "inline-block");
                 $("#second_text_area").text(second_text_text);
                 area_style = 'background:' + '#ffff00;';
                 if (burrowed_content !== undefined) {
@@ -25,7 +26,6 @@ $(document).ready(function () {
                         new_text = new_text.replace(part, highlighted_content);
                     }
                     $("#second_text_area").html(new_text)
-//                    console.log($("#second_text_area").html())
                 }
             },
             dataType: 'json',

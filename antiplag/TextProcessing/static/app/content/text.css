@@ -27,6 +27,10 @@
     //display: none;
 }
 
+.sources{
+    margin-top: 68px;
+}
+
 .first_text_button{
     display: inline-block;
     float: left;

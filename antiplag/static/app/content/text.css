@@ -11,15 +11,24 @@
     float: right;
 }
 
+.source_text{
+    display: block;
+}
+
 .first_text{
     float: left;
-    width: 100%
+    width: 48%;
+
 }
 
 .second_text{
     float: right;
     width: 48%;
-    display: none;
+    //display: none;
+}
+
+.sources{
+    margin-top: 68px;
 }
 
 .first_text_button{
@@ -44,9 +53,15 @@
     border: 0px solid #ffd429;
 }
 
+#second_text_area{
+    display: none;
+}
+
 .detailed_text_area{
     overflow: auto;
     height: 65vh;
+    border: 1px solid #e6e6e6;
+    padding: 5px;
 }
 
 .text_list{
@@ -54,6 +69,27 @@
     justify-content: space-between;
     border: 1px solid #e6e6e6;
     padding: 10px;
+}
+
+.source_list{
+    border: 1px solid #e6e6e6;
+    padding: 10px;
+}
+
+.source_navigate{
+    display: flex;
+    justify-content: space-between;
+}
+
+.source_navigate_button{
+    height: 30px;
+    padding: 5px 0;
+    width: 100%;
+    margin-top: 5px;
+}
+
+.source_text{
+    width: 100%;
 }
 
 .text_details{

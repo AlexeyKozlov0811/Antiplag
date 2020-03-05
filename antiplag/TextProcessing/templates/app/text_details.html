@@ -12,6 +12,7 @@
                     <h4 class="text_source">Автор: {{ i.author }}</h4>
                 {% endif %}
                 <h4 class="text_upload_date">Дата завантаження: {{ i.upload_date }}</h4>
+                <p id="uniqueness" style="display: none;">{{i.uniqueness}}</p>
                 {% if i.uniqueness == -1.0 %}
                     <h4>Унікальність = не перевірено</h4>
                 {% elif i.uniqueness != 101.0 %}
@@ -28,7 +29,7 @@
 
                     <h4 class="sources">Запозичення:</h4>
                     {% for source in i.get_sources %}
-                        <div class="source_list">
+                        <div class="source_list {{source}}">
                             <a class="source_link" href="http://{{ request.get_host }}/text/{{source}}/">http://{{ request.get_host }}/text/{{source}}/</a>
                             <button class="source_navigate_button get_source" value="{{source}}">Порівняти з текстом</button>
                         </div>
@@ -45,6 +46,14 @@
 {% load staticfiles %}
 
 <script src="{% static 'app/scripts/highlighter.js' %}"></script>
+<script src="{% static 'app/scripts/get_source.js' %}"></script>
+<script src="{% static 'app/scripts/sources_highlighter.js' %}"></script>
+
+<script>
+    let uniqueness = $("#uniqueness").html().trim();
+    if (uniqueness == '-1,0' || uniqueness == '101,0' || uniqueness == '100,0'){
+        $(".first_text").css({"width": "100%"});}
+</script>
 
 {% endblock %}
 

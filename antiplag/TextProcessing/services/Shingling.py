@@ -125,76 +125,79 @@ def GetSimilarAreasDefinition(text1_dictionary: Dict[int, str],
         -> Union[Dict[Union[int, str], List[Union[int, str]]], List[str]]:
     areas = []
     new_list_of_areas = []
+    list_of_areas = []
     defined_area = ""
     word = ""
     areas_str = ""
     last_words_string = ""
-    for k in range(len(list(compared_texts.values())[0])):
-        if list(compared_texts.values())[0][k] in text1_dictionary:
-            areas.append((text1_dictionary.get(list(compared_texts.values())[0][k])))
+    for i in range(len(compared_texts)):
+        local_areas = []
+        for k in range(len(list(compared_texts.values())[i])):
+            if list(compared_texts.values())[i][k] in text1_dictionary:
+                local_areas.append((text1_dictionary.get(list(compared_texts.values())[i][k])))
+        areas.append(local_areas)
 
-    for i in range(len(areas)):
-        new_list_of_areas.append(areas[i].split(' '))
-        counter = 0
-        middle_words = ""
-        for j in range(len(new_list_of_areas[i])):
+    for k in range(len(areas)):
+        for i in range(len(areas[k])):
+            new_list_of_areas.append(areas[k][i].split(' '))
+            counter = 0
+            middle_words = ""
+            for j in range(len(new_list_of_areas[i])):
 
-            view_var_delete_later = new_list_of_areas[i][j]
+                view_var_delete_later = new_list_of_areas[i][j]
 
-            word_without_punct = PunctuationRemoval(new_list_of_areas[i][j])
-            if new_list_of_areas[i][j].lower() not in stop_words and re.search(stop_symbols, new_list_of_areas[i][j]) \
-                    and (word_without_punct == new_list_of_areas[i][j] or word_without_punct not in stop_words):
-                counter += 1
+                word_without_punct = PunctuationRemoval(new_list_of_areas[i][j])
+                if new_list_of_areas[i][j].lower() not in stop_words and re.search(stop_symbols, new_list_of_areas[i][j]) \
+                        and (word_without_punct == new_list_of_areas[i][j] or word_without_punct not in stop_words):
+                    counter += 1
 
-            if counter == 2 or counter == 3:
-                middle_words += new_list_of_areas[i][j] + ' '
-            if counter == 4:
-                middle_words = re.sub(r'\s$', "", middle_words)
+                if counter == 2 or counter == 3:
+                    middle_words += new_list_of_areas[i][j] + ' '
+                if counter == 4:
+                    middle_words = re.sub(r'\s$', "", middle_words)
 
-            if middle_words not in defined_area and counter > 3:
-                defined_area += " #" + ' '.join(new_list_of_areas[i])
-                break
+                if middle_words not in defined_area and counter > 3:
+                    defined_area += " #" + ' '.join(new_list_of_areas[i])
+                    break
 
-            if counter == 4:
-                last_words_string += ' ' + new_list_of_areas[i][j]
+                if counter == 4:
+                    last_words_string += ' ' + new_list_of_areas[i][j]
 
-        defined_area += last_words_string
-        last_words_string = ""
+            defined_area += last_words_string
+            last_words_string = ""
 
-    list_of_areas = defined_area.split('#')
-    del list_of_areas[0]
+        list_of_local_areas = defined_area.split('#')
+
+        del list_of_local_areas[0:k+1]
+        list_of_areas.append(list_of_local_areas)
+
     if text_type:
-        dict_of_areas = {list(compared_texts.keys())[0]: list_of_areas}
+        dict_of_areas = {}
+        for i in range(len(list_of_areas)):
+            dict_of_areas.update({list(compared_texts.keys())[i]: list_of_areas[i]})
         return dict_of_areas
     else:
-        return list_of_areas
+        return list_of_areas[0]
 
 
-def RemoveDuplicates(old_similar_phrases: Dict[Union[int, str], List[int]],
+def RemoveDuplicates(similar_phrases: Dict[Union[int, str], List[int]],
                      new_similar_phrases: Dict[int, List[int]]) -> Dict[Union[int, str], List[int]]:
     duplicates_keys = []
     transformed_dict = {}
-    if old_similar_phrases:
-        for key in old_similar_phrases:
-            if list(new_similar_phrases.values())[0] == old_similar_phrases[key]:
+    similar_phrases.update(new_similar_phrases)
+
+    for key in similar_phrases:
+        if str(key) != str(list(new_similar_phrases.keys())[0]):
+            if list(new_similar_phrases.values())[0] == similar_phrases[key]:
                 sources = str(key) + "_" + str(list(new_similar_phrases.keys())[0])
-                # sources.append(list(new_similar_phrases.keys())[0])
-                duplicates_keys.append(key)
                 transformed_dict.update({sources: list(new_similar_phrases.values())[0]})
-    else:
-        old_similar_phrases.update(new_similar_phrases)
-        # for word_in_old in old_similar_phrases:
-        #     for word_in_new in new_similar_phrases:
-        #         if word_in_new == word_in_old:
-        #             duplicates_indexes.append(new_similar_phrases[list(new_similar_phrases.keys())[0]].index(word_in_new))
-        # duplicates_indexes = list(set(duplicates_indexes))
-        # duplicates_indexes.sort(reverse=True)
-        # for duplicate in duplicates_indexes:
-        #     del new_similar_phrases[duplicate]
-    old_similar_phrases.update(transformed_dict)
-    for key in duplicates_keys:
-        del old_similar_phrases[key]
-    return old_similar_phrases
+                duplicates_keys.append(key)
+    if duplicates_keys:
+        for key in duplicates_keys:
+            del similar_phrases[key]
+        similar_phrases.update(transformed_dict)
+
+    return similar_phrases
 
 
 # counts the percentage of two texts, will be changed later

@@ -128,12 +128,13 @@ def highlight_text(request, pk):
     """Answers ajax request to highlight text parts."""
     if request.is_ajax():
         text_burrowed_content = GetTextBurrowedContent(pk)
+        # print(text_burrowed_content)
         if text_burrowed_content:
             text_burrowed_content_sources = list(text_burrowed_content.keys())
             response = {'text': text_burrowed_content,
                         'sources': text_burrowed_content_sources}
         else:
             response = None
-        return JsonResponse(response)
+        return JsonResponse(response, safe=False)
     else:
         raise Http404
