@@ -31,6 +31,18 @@
     margin-top: 68px;
 }
 
+.once{
+    background: #ffff00;
+}
+
+.two_times{
+    background: #ffaa00;
+}
+
+.tree_and_more{
+    background: #ff0000;
+}
+
 .first_text_button{
     display: inline-block;
     float: left;

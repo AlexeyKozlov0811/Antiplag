@@ -1,3 +1,4 @@
+
 url = document.location.href.split('/');
 id = url[url.length-2]
 $.ajax({
@@ -6,25 +7,26 @@ $.ajax({
     url: '/highlight_text/' + id + '/',
     data: "",
     success: function(data) {
-        console.log(data)
-        burrowed_text = data['text']
-        sources = data['sources']
-
+        console.log(data);
+        burrowed_text = data['text'];
+        sources = data['sources'];
         if (data !== undefined){
 
             new_text = $("#first_text_area").html().trim();
             for (let key of sources){
-
+                burrowed_text[key].sort(function(a, b){
+                    return a.length - b.length;
+                });
                 for (let text_idx = 0; text_idx < burrowed_text[key].length; text_idx++){
                     burrowed_content = `${burrowed_text[key][text_idx]}`
-                    area_style = 'background:' + '#ffff00;';
+                    burrowed_times = 'once'
                     if (key.split("_").length >= 3){
-                        area_style = 'background:' + '#ff0000;';
+                        burrowed_times = 'tree_and_more';
                     }
                     else if (key.split("_").length == 2){
-                        area_style = 'background:' + '#ffaa00;';
+                        urrowed_times = 'two_times';
                     }
-                    highlighted_content = '<span class=\'highlighted_text ' + `${key}` + '\' style=' + `${area_style}` + ' onclick=\'highlight_sources(\"' + `${key}` + '\")\'' + '>' + `${burrowed_content}` + '</span>';
+                    highlighted_content = '<span class=\'highlighted_text ' + `${key} ` + `${burrowed_times}` +'\''  + ' onclick=\'highlight_sources(\"' + `${key}` + '\")\'' + '>' + `${burrowed_content}` + '</span>';
 
                     const symbols = /\[|\\|\^|\$|\.|\||\?|\*|\+|\(|\)/g;
                     burrowed_content = burrowed_content.replace(symbols, '\\$&');
