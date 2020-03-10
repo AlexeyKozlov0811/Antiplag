@@ -3,7 +3,7 @@
         <div class="text_info">
             {% if i.source == "Author" %}
                 <p class="text_source">Автор: {{ i.author }}</p>
-            {% elif i.author == "Unknown" %}
+            {% elif i.author == "web" %}
                 <p class="text_source">Джерело: <a href="{{ i.source }}">{{ i.source }}</a></p>
             {% else %}
                 <p class="text_source">Джерело: {{ i.source }}</p>

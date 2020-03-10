@@ -24,7 +24,7 @@
                 <p id="first_text_area" class="detailed_text_area">{{i.content}}</p>
 
             </div>
-            {% if i.get_sources != -1 %}
+            {% if i.get_sources != -1 and i.get_sources != 101 and i.get_sources != 100 %}
             <div class="second_text">
 
                     <h4 class="sources">Запозичення:</h4>
@@ -52,6 +52,7 @@
 <script>
     let uniqueness = $("#uniqueness").html().trim();
     if (uniqueness == '-1,0' || uniqueness == '101,0' || uniqueness == '100,0'){
+        $(".second_text").css({"display": "none"});
         $(".first_text").css({"width": "100%"});}
 </script>
 
