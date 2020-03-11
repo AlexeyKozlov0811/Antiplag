@@ -118,9 +118,9 @@ def FindSimilarAreas(text_id: int, user_text_shingles: List[int])\
 
             str_similar_part = [str(item) for item in list(similar_part.values())[0]]
 
-            similar_parts = RemoveDuplicates(similar_parts, similar_part)
+            # similar_parts = RemoveDuplicates(similar_parts, similar_part)
 
-
+            similar_parts.update(similar_part)
 
             data_base_text_shingle_dict = json.loads(data_base_text.shingle_dict)
 
