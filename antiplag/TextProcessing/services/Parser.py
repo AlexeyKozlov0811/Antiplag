@@ -8,9 +8,6 @@ from bs4 import BeautifulSoup
 from django.conf import settings
 
 
-pages_of_search = settings.SEARCH_RESULTS // 10 + 1
-
-
 # function returns web page html code or 0 in case of failure
 def GetHTML(url: str) -> Union[int, requests.Response]:
     try:
@@ -86,7 +83,7 @@ def FindTextUrls(text: str) -> List[str]:
     AllParts = TextSeparation(text)
     for Query in AllParts:
         try:
-            Urls += GetSearchQueryResult(Query)[0:settings.SEARCH_RESULTS]
+            Urls += GetSearchQueryResult(Query)[0:search_results]
         except IndexError:
             return ["0"]
         else:
@@ -96,6 +93,7 @@ def FindTextUrls(text: str) -> List[str]:
 # debug
 if __name__ == "__main__":
     pages_of_search = 1
+    search_results = 1
     query = "Матеріал з Вікіпедії — вільної енциклопедії. Python (найчастіше вживане прочитання — «Па́йтон», " \
             "запозичено назву[5] з британського шоу Монті Пайтон) — інтерпретована об'єктно-орієнтована мова " \
             "програмування високого рівня зі строгою динамічною типізацією.[6] Розроблена в 1990 році Гвідо ван " \
@@ -144,3 +142,6 @@ if __name__ == "__main__":
     # print(get_content(search_parsing(text_separation(query)[0])[0]))
     # print(search_parsing(text_separation(query)[0]))
     print(FindTextUrls(query))
+else:
+    search_results = settings.SEARCH_RESULTS
+    pages_of_search = search_results // 10 + 1
