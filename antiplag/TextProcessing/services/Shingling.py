@@ -71,14 +71,22 @@ def GetSimilarAreasDefinition(text1_dictionary: Dict[int, List[str]],
             if list(compared_texts.values())[i][k] in text1_dictionary:
                 local_areas.append((text1_dictionary.get(list(compared_texts.values())[i][k])))
         area = ' '.join(local_areas[i])
+        # print(local_areas)
         for k in range(len(local_areas) - 1):
-            if sum(word in local_areas[k] for word in local_areas[k + 1]) == shingle_len - 1:
+        # for k in range(20):
+            # print(sum(word in local_areas[k] for word in local_areas[k + 1]))
+            same_words = sum(word in local_areas[k] for word in local_areas[k + 1])
+            if same_words == shingle_len - 1:
                 area += ' '
                 area += local_areas[k + 1][-1]
+            elif same_words == shingle_len:
+                pass
             else:
                 list_of_local_areas.append(area)
                 area = ' '.join(local_areas[k + 1])
+            # print(area)
         list_of_local_areas.append(area)
+        # print(list_of_local_areas)
         list_of_areas.append(list_of_local_areas)
 
     if text_type:
@@ -113,61 +121,96 @@ def RemoveDuplicates(similar_phrases: Dict[Union[int, str], List[int]],
 
 
 # counts the percentage of two texts, will be changed later
-def SimilarityPercentageCalculation(source: List[int], same: List[int]) -> float:
+def SimilarityPercentageCalculation(source: List[int], burrowed: List[int]) -> float:
+    same = 0
+    for i in range(len(source)):
+        if source[i] in burrowed:
+            same = same + 1
     try:
-        return float(format(100 - len(same) / float(len(source)) * 100, '.2f'))
+        return float(format(100 - same*2/float(len(source) + len(burrowed))*100, '.2f'))
     except ZeroDivisionError:
         return 0.0
-
-
-def SplitText(text, borrowed_content):
-    diapasons = str(len(borrowed_content))
-    for borrowed_str in borrowed_content:
-        first = text.find(borrowed_str)
-        last = first + len(borrowed_str)
-        diapasons += " " + str(first) + ":" + str(last)
-    return diapasons
+#
+#
+# def SplitText(text, borrowed_content):
+#     diapasons = str(len(borrowed_content))
+#     for borrowed_str in borrowed_content:
+#         first = text.find(borrowed_str)
+#         last = first + len(borrowed_str)
+#         diapasons += " " + str(first) + ":" + str(last)
+#     return diapasons
 
 
 if __name__ == "__main__":
     shingle_len = 10
 
-    text1 = "Python (найчастіше вживане прочитання — «Па́йтон», запозичено назву[5] з британського шоу Монті Пайтон) " \
-            "— інтерпретована об'єктно-орієнтована мова програмування високого рівня зі строгою динамічною ffffffffff " \
-            "fffffffff типізацією. [6] Розроблена в 1990 році Гвідо ван Россумом. Структури даних високого рівня разом " \
-            "із динамічною семантикою та динамічним зв'язуванням роблять її привабливою для швидкої розробки програм " \
-            "В мові програмування Python підтримується кілька парадигм програмування, зокрема: об'єктно-орієнтована, " \
-            "процедурна, функціональна та аспектно-орієнтована"
+    text1 = "ЗАСТОСУВАННЯ НЕЙРОМЕРЕЖ ДЛЯ ІНФОРМАЦІЙНОГО ПОШУКУ Застосування нейромереж для задач інформаційного " \
+            "пошуку може значно покращити швидкість та точність пошуку. Сутність методу полягає в властивості " \
+            "нейромережі до навчання, тобто при правильному алгоритмі результат роботи програми буде все точніше й " \
+            "точніше, а завдяки зібраному досвіду шлях вирішення задачі буде також зменшуватись, що прискорить появу " \
+            "результату. Мінусами цього методу є велика вартість в грошових та обчислювальних ресурсах і значні " \
+            "потреби в часі на розробку, тестування, розгортання та навчання нейромережі. Розглянемо застосування " \
+            "методу на прикладі реалізації пошукової системи. Python (найчастіше вживане прочитання — «Па́йтон», " \
+            "запозичено назву[5] з британського шоу Монті Пайтон) — інтерпретована об'єктно-орієнтована мова " \
+            "програмування високого рівня зі строгою динамічною типізацією.[6]"
 
     text2 = "Python (найчастіше вживане прочитання — «Па́йтон», запозичено назву[5] з британського шоу Монті Пайтон) " \
             "— інтерпретована об'єктно-орієнтована мова програмування високого рівня зі строгою динамічною " \
-            "типізацією. [6] Розроблена в 1990 році Гвідо ван Россумом. Структури даних високого рівня разом із " \
-            "динамічною семантикою та динамічним зв'язуванням роблять її привабливою для швидкої розробки програм" \
+            "типізацією.[6] Розроблена в 1990 році Гвідо ван Россумом. Структури даних високого рівня разом із " \
+            "динамічною семантикою та динамічним зв'язуванням роблять її привабливою для швидкої розробки програм, " \
+            "а також як засіб поєднування наявних компонентів. Python підтримує модулі та пакети модулів, " \
+            "що сприяє модульності та повторному використанню коду. Інтерпретатор Python та стандартні бібліотеки " \
+            "доступні як у скомпільованій, так і у вихідній формі на всіх основних платформах. В мові програмування " \
+            "Python підтримується кілька парадигм програмування, зокрема: об'єктно-орієнтована, процедурна, " \
+            "функціональна та аспектно-орієнтована. ЗАСТОСУВАННЯ НЕЙРОМЕРЕЖ ДЛЯ ІНФОРМАЦІЙНОГО ПОШУКУ Застосування " \
+            "нейромереж для задач інформаційного пошуку може значно покращити швидкість та точність пошуку. Сутність " \
+            "методу полягає в властивості нейромережі до навчання, тобто при правильному алгоритмі результат роботи " \
+            "програми буде все точніше й точніше, а завдяки зібраному досвіду шлях вирішення задачі буде також " \
+            "зменшуватись, що прискорить появу результату. Мінусами цього методу є велика вартість в грошових та " \
+            "обчислювальних ресурсах і значні потреби в часі на розробку, тестування, розгортання та навчання " \
+            "нейромережі. Розглянемо застосування методу на прикладі реалізації пошукової системи. "
 
-    text3 = "Python (найчастіше вживане прочитання — «Па́йтон», запозичено назву[5] з британського шоу Монті Пайтон) " \
-            "— інтерпретована об'єктно-орієнтована мова програмування високого рівня зі строгою динамічною " \
-            "типізацією. [6] Розроблена в 1990 році Гвідо ван Россумом. Структури даних високого рівня разом із " \
-            "динамічною семантикою та динамічним зв'язуванням роблять її привабливою для швидкої розробки програм" \
-
-    text4 = "В мові програмування Python підтримується кілька парадигм програмування, зокрема: об'єктно-орієнтована, " \
-            "процедурна, функціональна та аспектно-орієнтована"
+    # text3 = "Python (найчастіше вживане прочитання — «Па́йтон», запозичено назву[5] з британського шоу Монті Пайтон) " \
+    #         "— інтерпретована об'єктно-орієнтована мова програмування високого рівня зі строгою динамічною " \
+    #         "типізацією. [6] Розроблена в 1990 році Гвідо ван Россумом. Структури даних високого рівня разом із " \
+    #         "динамічною семантикою та динамічним зв'язуванням роблять її привабливою для швидкої розробки програм" \
+    #
+    # text4 = "В мові програмування Python підтримується кілька парадигм програмування, зокрема: об'єктно-орієнтована, " \
+    #         "процедурна, функціональна та аспектно-орієнтована"
 
     shingle_dict = CreateShingleDictionary(text1)
+    shingle_dict2 = CreateShingleDictionary(text2)
+
+    # print(shingle_dict)
+    # print('\n')
+    # print(shingle_dict2)
 
     shingled_canonized_text1 = ShingleGeneration(Canonize(text1))
     shingled_canonized_text2 = ShingleGeneration(Canonize(text2))
-    shingled_canonized_text3 = ShingleGeneration(Canonize(text3))
-    shingled_canonized_text4 = ShingleGeneration(Canonize(text4))
+    # shingled_canonized_text3 = ShingleGeneration(Canonize(text3))
+    # shingled_canonized_text4 = ShingleGeneration(Canonize(text4))
+
+    # print(shingled_canonized_text1)
+    # print(shingled_canonized_text2)
+    # if 1174430964 in shingled_canonized_text2:
+    #     print("1174430964")
 
     similar_1 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text2)
-    similar_2 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text3)
-    similar_3 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text4)
+    # print(similar_1)
+    # similar_2 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text3)
+    # similar_3 = GetSimilarAreas(shingled_canonized_text1, shingled_canonized_text4)
 
-    similar = RemoveDuplicates({1: similar_1}, {2: similar_2})
-    similar = RemoveDuplicates(similar, {3: similar_3})
-
+    similar = RemoveDuplicates({}, {1: similar_1})
+    # similar = RemoveDuplicates({1: similar_1}, {2: similar_2})
+    # similar = RemoveDuplicates(similar, {3: similar_3})
+    # print(similar)
     similar_areas = GetSimilarAreasDefinition(shingle_dict, similar, 1)
 
-    print(similar_areas)
+    # print(similar_areas)
+
+    uniq = SimilarityPercentageCalculation(shingled_canonized_text1, similar_1)
+    # print(shingled_canonized_text1)
+    # print(similar_1)
+    print(uniq)
 
 

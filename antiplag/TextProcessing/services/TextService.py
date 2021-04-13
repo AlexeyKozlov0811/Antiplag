@@ -72,7 +72,7 @@ def SeparateBurrowedContent(text_id: int, main_burrowed_content: Dict[int, List[
                             another_texts_burrowed_content: Dict[int, List[str]]) -> None:
     text = Text.objects.get(id=text_id)
     burrowed_content = {text.id: main_burrowed_content}
-    burrowed_content.update(another_texts_burrowed_content)
+    # burrowed_content.update(another_texts_burrowed_content)
     text.burrowed_content = json.dumps(burrowed_content, ensure_ascii=False)
     text.save()
 
@@ -117,7 +117,7 @@ def FindSimilarAreas(text_id: int, user_text_shingles: List[int])\
 
             similar_parts = RemoveDuplicates(similar_parts, similar_part)
 
-            similar_parts.update(similar_part)
+            # similar_parts.update(similar_part)
 
             data_base_text_shingle_dict = json.loads(data_base_text.shingle_dict)
 

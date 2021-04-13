@@ -1,5 +1,4 @@
 stop_symbols = '.,!?:;-\'\"—\n\r()«»'
-# stop_symbols = r'[a-zA-Zа-яА-ЯёЁЇїІіЄєҐґ\'-]'
 stop_words = (
               # сполучники
               u'і', u'й', u'так',
