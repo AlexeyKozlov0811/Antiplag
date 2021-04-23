@@ -13,9 +13,11 @@ morph = MorphAnalyzer(lang='uk')
 if __name__ == "__main__":
     from antiplag.TextProcessing.services.StopSymbols import stop_words, stop_symbols
     shingle_len = 10
+    shingle_step = 1
 else:
     from .StopSymbols import stop_words, stop_symbols
     shingle_len = settings.SHINGLE_LENGTH
+    shingle_step = settings.SHINGLE_STEP
 
 def Canonize(source: str) -> List[str]:
     return [x for x in [y.strip(stop_symbols) for y in source.lower().split()] if x and (x not in stop_words)]
@@ -52,7 +54,7 @@ def CreateShingleDictionary(text: str) -> Dict[int, List[str]]:
 # compares texts and returns list of similar hashed shingles
 def GetSimilarAreas(source1: List[int], source2: List[int]) -> List[int]:
     similar_phrases = []
-    for i in range(len(source1)):
+    for i in range(0, len(source1), shingle_step):
         if source1[i] in source2:
             similar_phrases.append(source1[i])
     return similar_phrases
