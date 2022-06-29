@@ -18,9 +18,6 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v3
         
-      - name: Create ZIP package
-        run: zip -r ${{env.DEPLOY_PACKAGE_NAME}} ./ -x *.git*
-        
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
