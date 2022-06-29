@@ -1,0 +1,46 @@
+name: CI-CD-Pileline-aws
+
+env:
+  EB_PACKAGE_S3_BUCKET_NAME: "oleksii-kozlov-flask-test-bucket"
+  EB_APPLICATION_NAME: "FlaskTest"
+  EB_ENVIRONMENT: "Flasktest-env"
+  DEPLOY_PACKAGE_NAME: "flask_test_${{ github.sha }}.zip"
+  AWS_REGION_NAME: "eu-central-1"
+  ECR_REPOSITORY: "antiplag"
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
+        
+      - name: Create ZIP package
+        run: zip -r ${{env.DEPLOY_PACKAGE_NAME}} ./ -x *.git*
+        
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ${{ env.AWS_REGION_NAME }}
+          
+      - name: Login to AWS ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+        
+      - name: Build and push an image to ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ect.outputs.registry }}
+          IMAGE_TAG: lastest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
