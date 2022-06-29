@@ -11,17 +11,17 @@ services:
       - ./antiplag:/antiplag
     command: >
       sh -c "python manage.py runserver 0.0.0.0:8000"
-  celery:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    command: celery -A Antiplag worker --pool=solo -l info
-    volumes:
-      - ./antiplag:/antiplag
-    links:
-      - redis
-    depends_on:
-      - redis
+#   celery:
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#     command: celery -A Antiplag worker --pool=solo -l info
+#     volumes:
+#       - ./antiplag:/antiplag
+#     links:
+#       - redis
+#     depends_on:
+#       - redis
   redis:
     image: redis:latest
     command: redis-server
