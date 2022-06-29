@@ -2,8 +2,8 @@ name: CI-CD-Pileline-aws
 
 env:
   EB_PACKAGE_S3_BUCKET_NAME: "oleksii-kozlov-antiplag-bucket"
-  EB_APPLICATION_NAME: "Antiplag-test"
-  EB_ENVIRONMENT: "Antiplag-test-env"
+  EB_APPLICATION_NAME: "Antiplag"
+  EB_ENVIRONMENT: "Antiplag-env-1"
   DEPLOY_PACKAGE_NAME: "antiplag_${{ github.sha }}.zip"
   AWS_REGION_NAME: "eu-central-1"
 
