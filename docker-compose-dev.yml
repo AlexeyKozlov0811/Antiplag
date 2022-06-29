@@ -4,7 +4,7 @@ services:
   antiplag-service:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     ports:
       - "8000:8000"
     volumes:
@@ -14,7 +14,7 @@ services:
   celery:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.dev
     command: celery -A Antiplag worker --pool=solo -l info
     volumes:
       - ./antiplag:/antiplag
