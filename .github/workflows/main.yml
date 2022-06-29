@@ -1,10 +1,6 @@
 name: CI-CD-Pileline-aws
 
 env:
-  EB_PACKAGE_S3_BUCKET_NAME: "oleksii-kozlov-flask-test-bucket"
-  EB_APPLICATION_NAME: "FlaskTest"
-  EB_ENVIRONMENT: "Flasktest-env"
-  DEPLOY_PACKAGE_NAME: "flask_test_${{ github.sha }}.zip"
   AWS_REGION_NAME: "eu-central-1"
   ECR_REPOSITORY: "antiplag"
 
@@ -36,11 +32,11 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
         
-      - name: Build and push an image to ECR
+      - name: Build, Tag, and Push the Image to Amazon ECR
         id: build-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ect.outputs.registry }}
-          IMAGE_TAG: lastest
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: latest
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
