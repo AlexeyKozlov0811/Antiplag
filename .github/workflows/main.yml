@@ -1,8 +1,9 @@
 name: CI-CD-Pileline-aws
 
 env:
+  S3_BUCKET_NAME: "oleksii-kozlov-antiplag-bucket"
+  DEPLOY_PACKAGE_NAME: "antiplag_${{ github.sha }}.zip"
   AWS_REGION_NAME: "eu-central-1"
-  ECR_REPOSITORY: "antiplag"
 
 on:
   push:
@@ -18,22 +19,24 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v3
         
+      - name: Setup Python
+        uses: actions/setup-python@v4.0.0
+        with:
+          python-version: 3.8
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: python manage.py test 
+
+      - name: Create ZIP package
+        run: zip -r ${{env.DEPLOY_PACKAGE_NAME}} ./ -x *.git*
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION_NAME }}
-          
-      - name: Login to AWS ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-        
-      - name: Build, Tag, and Push the Image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Copy deployment package to S3
+        run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.S3_BUCKET_NAME }}/
