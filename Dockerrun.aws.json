@@ -1,0 +1,69 @@
+{
+    "containerDefinitions": [
+        {
+            "command": [
+                "sh",
+                "-c",
+                "python manage.py runserver 0.0.0.0:8000"
+            ],
+            "essential": true,
+            "mountPoints": [
+                {
+                    "containerPath": "/antiplag",
+                    "sourceVolume": "_Antiplag"
+                }
+            ],
+            "name": "antiplag-service",
+            "memory": 128,
+            "image": "138346991906.dkr.ecr.eu-central-1.amazonaws.com/antiplag:latest",
+            "portMappings": [
+                {
+                    "containerPort": 8000,
+                    "hostPort": 8000
+                }
+            ]
+        },
+        {
+            "command": [
+                "celery",
+                "-A",
+                "Antiplag",
+                "worker",
+                "--pool=solo",
+                "-l",
+                "info"
+            ],
+            "essential": true,
+            "links": [
+                "redis"
+            ],
+            "mountPoints": [
+                {
+                    "containerPath": "/antiplag",
+                    "sourceVolume": "_Antiplag"
+                }
+            ],
+            "name": "celery",
+            "memory": 128,
+            "image": "138346991906.dkr.ecr.eu-central-1.amazonaws.com/antiplag:latest"
+        },
+        {
+            "command": [
+                "redis-server"
+            ],
+            "essential": true,
+            "image": "redis:latest",
+            "memory": 128,
+            "name": "redis"
+        }
+    ],
+    "family": "",
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "./antiplag"
+            },
+            "name": "_Antiplag"
+        }
+    ]
+}
