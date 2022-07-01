@@ -62,7 +62,7 @@
     "volumes": [
         {
             "host": {
-                "sourcePath": "./antiplag"
+                "sourcePath": "/antiplag"
             },
             "name": "_Antiplag"
         }
