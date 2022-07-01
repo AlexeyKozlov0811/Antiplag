@@ -36,8 +36,8 @@ jobs:
           pip install pytest
           pip install coverage
           coverage run antiplag/manage.py test --settings=Antiplag.settings
-          coverage report -m --rcfile=./.coveragerc
-          coverage xml --rcfile=./.coveragerc -o coverage-report-${{ github.sha }}.xml
+          coverage report -m
+          coverage xml -o coverage-report-${{ github.sha }}.xml
       - name: Upload pytest test results
         uses: actions/upload-artifact@v3
         with:
