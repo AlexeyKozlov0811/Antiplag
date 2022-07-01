@@ -35,7 +35,7 @@ jobs:
         run: |
           pip install pytest
           pip install coverage
-          coverage run manage.py test --settings=antiplag.Antiplag.settings
+          coverage run antiplag/manage.py test --settings=antiplag.Antiplag.settings
           coverage report -m --rcfile=./.coveragerc
           coverage xml --rcfile=./.coveragerc -o coverage-report-${{ github.sha }}.xml
       - name: Upload pytest test results
