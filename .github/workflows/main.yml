@@ -83,13 +83,18 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: ${{ env.AWS_REGION_NAME }}
+          
+      - name: Automatic Tagging of Releases
+        id: increment-git-tag
+        run: |
+          bash ./build/git_update.sh -v minor
 
       - name: Create new EB app version
         run: |
           aws elasticbeanstalk create-application-version \
           --application-name ${{ env.EB_APPLICATION_NAME }} \
           --source-bundle S3Bucket="${{ env.S3_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
-          --version-label "Ver-${{ github.sha }}" \
+          --version-label "${{ steps.increment-git-tag.outputs.git-tag }}" \
           --description "CommitSHA-${{ github.sha }}"
       - name: Deploy new EB app version
-        run: aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT }} --version-label "Ver-${{ github.sha }}"
+        run: aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT }} --version-label "${{ steps.increment-git-tag.outputs.git-tag }}"
