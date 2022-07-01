@@ -7,7 +7,6 @@ RUN pip install -r /requirements.txt
 
 RUN mkdir /antiplag
 WORKDIR /antiplag
-COPY ./antiplag /antiplag
+COPY . /antiplag
 
-RUN adduser -D user
-USER user
+RUN python antiplag/manage.py migrate

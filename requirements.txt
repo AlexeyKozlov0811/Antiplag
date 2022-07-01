@@ -8,3 +8,4 @@ redis==4.3.4
 pymorphy2==0.9.1
 pymorphy2-dicts-uk
 eventlet==0.33.1
+whitenoise==6.2.0
