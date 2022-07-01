@@ -11,7 +11,7 @@
             "mountPoints": [
                 {
                     "containerPath": "/antiplag",
-                    "sourceVolume": "_Antiplag"
+                    "sourceVolume": "_"
                 }
             ],
             "name": "antiplag-service",
@@ -34,14 +34,14 @@
                 "-l",
                 "info"
             ],
-            "essential": true,
+            "essential": false,
             "links": [
                 "redis"
             ],
             "mountPoints": [
                 {
                     "containerPath": "/antiplag",
-                    "sourceVolume": "_Antiplag"
+                    "sourceVolume": "_"
                 }
             ],
             "name": "celery",
@@ -52,7 +52,7 @@
             "command": [
                 "redis-server"
             ],
-            "essential": true,
+            "essential": false,
             "image": "redis:latest",
             "memory": 128,
             "name": "redis"
@@ -62,9 +62,9 @@
     "volumes": [
         {
             "host": {
-                "sourcePath": "/antiplag"
+                "sourcePath": "."
             },
-            "name": "_Antiplag"
+            "name": "_"
         }
     ]
 }
