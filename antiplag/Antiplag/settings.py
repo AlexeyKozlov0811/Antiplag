@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'localhost',
+    'antiplag-env.eba-cevgmyx2.eu-central-1.elasticbeanstalk.com',
+    'antiplag.com'
 ]
 
 # Application definition
