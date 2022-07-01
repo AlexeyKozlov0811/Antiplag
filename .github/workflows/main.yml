@@ -65,12 +65,9 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         with:
-#           access_key: ${{ secrets.AWS_ACCESS_KEY }}
-#           secret_key: ${{ secrets.AWS_SECRET_KEY }}
-#           region: ${{ env.AWS_REGION_NAME }}
           repo: ${{ env.ECR_REPOSITORY }}
           registry: ${{ env.ECR_REGISTRY }}
-          cache_from: ${{ env.ECR_REPOSITORY }}/${{ env.ECR_REGISTRY }}
+          cache_from: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPOSITORY }}
           tags: "latest,${{ github.sha }}"
 
       - name: Copy deployment package to S3
