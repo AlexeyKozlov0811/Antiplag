@@ -1,4 +1,5 @@
 {
+  "AWSEBDockerrunVersion": "2",
   "ipcMode": null,
   "executionRoleArn": null,
   "containerDefinitions": [
